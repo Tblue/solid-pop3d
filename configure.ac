@@ -4,8 +4,35 @@ AC_INIT(src/authenticate.c)
 PACKAGE=solid-pop3d
 VERSION=0.15
 
-AC_CONFIG_HEADER(config.h)
+AC_CONFIG_HEADERS(config.h)
 AM_INIT_AUTOMAKE($PACKAGE,$VERSION)
+
+# autoheader templates
+# (only add a call to AH_TEMPLATE here if there are
+# multiple AC_DEFINE calls for a variable)
+AH_TEMPLATE([CONFIGFILE],
+			[Define if you want to have configuration
+			 file support])
+AH_TEMPLATE([EXPIRATION],
+			[Define if you want to have expiration
+			 support])
+AH_TEMPLATE([HAVE_ETC_SECURITY_PASSWD_ADJUNCT],
+			[Define if you have shadow passwords in
+			 /etc/security/passwd.adjunct (SunOS style).])
+AH_TEMPLATE([HAVE_ETC_SHADOW],
+			[Define if you have shadow passwords in
+			 /etc/shadow (Solaris style).])
+AH_TEMPLATE([HAVE_SCO_ETC_SHADOW],
+			[Define this if on SCO Unix])
+AH_TEMPLATE([MAILOCK],
+			[Define if you have the maillock() function])
+AH_TEMPLATE([MDMAILBOX],
+			[Define if you want to have mailbox support])
+AH_TEMPLATE([MDMAILDIR],
+			[Define if you want to have maildir support])
+AH_TEMPLATE([USERCONFIG],
+			[Define if you want to have user configuration
+			 support])
 
 dnl Checks for programs.
 AC_PROG_CC
@@ -32,7 +59,11 @@ case "$host" in
 		no_libsun=yes
 		;;
 	*-dec-ultrix*)
-		AC_DEFINE(HAVE_ULTRIX_SHADOW_PASSWORDS)
+		AC_DEFINE([HAVE_ULTRIX_SHADOW_PASSWORDS], [],
+				  [Define this if compiling on Ultrix.
+				   Defining those does not actually
+				   require shadow passwords to be present;
+				   this just includes support for them.])
 		AC_CHECK_LIB(auth, authenticate_user, [
 			SPOPLIBS="$SPOPLIBS -lauth"] )
 		no_shadow_password_checking=yes
@@ -41,7 +72,9 @@ case "$host" in
 		AC_MSG_CHECKING(for HPUX tcb auth option)
 		if test -f /tcb/files/auth/system/pw_id_map; then
 			AC_MSG_RESULT(yes)
-			AC_DEFINE(HAVE_HPUX_TCB_AUTH)
+			AC_DEFINE([HAVE_HPUX_TCB_AUTH], [],
+					  [Define this for HP-UX 10.x shadow
+					   passwords])
 			SPOPLIBS="$SPOPLIBS -lsec"
 			no_shadow_password_checking=yes
 		else
@@ -101,7 +134,9 @@ AC_TRY_COMPILE( [
 	#include <sys/socket.h>], [
 	socklen_t tmp;],[
 	AC_MSG_RESULT(yes)], [
-	AC_DEFINE_UNQUOTED(socklen_t, int)
+	AC_DEFINE([socklen_t], [int],
+			  [Define to `int' if <sys/types.h> doesn't
+			   define])
 	AC_MSG_RESULT(no)])
 # Simple AC_CHECK_TYPE doesn't work.
 
@@ -178,7 +213,9 @@ AC_ARG_ENABLE(pam,
 			AC_MSG_RESULT(no)
 		else
 			if test -f /usr/include/security/pam_appl.h; then
-				AC_DEFINE(HAVE_PAM)
+				AC_DEFINE([HAVE_PAM], [],
+						  [Define if you want to use PAM
+						   to authenticate user.])
 				SPOPLIBS="$SPOPLIBS -lpam -ldl"
 				AC_MSG_RESULT(yes)
 			else
@@ -202,7 +239,8 @@ AC_ARG_ENABLE(apop,
 			POP_AUTH="pop_auth"
 			POP_AUTH_1="pop_auth.1"
 			APOP_O="apop.o"
-			AC_DEFINE(APOP)			
+			AC_DEFINE([APOP], [],
+					  [Define if you want to use APOP])
 		fi
 	],
 	AC_MSG_RESULT(no) )
@@ -301,7 +339,9 @@ AC_ARG_ENABLE(bulletins,
 			AC_MSG_RESULT(no)
 		else
 			AC_MSG_RESULT(yes)
-			AC_DEFINE(BULLETINS)
+			AC_DEFINE([BULLETINS], [],
+					  [Define if you want to have
+					   bulletins support])
 		fi
 	],
 	AC_MSG_RESULT(no) )
@@ -314,7 +354,9 @@ AC_ARG_ENABLE(standalone,
 		else
 			STANDALONE_O="standalone.o"
 			AC_MSG_RESULT(yes)
-			AC_DEFINE(STANDALONE)
+			AC_DEFINE([STANDALONE], [],
+					  [Define if you want to compile
+					   standalone server])
 		fi
 	],
 	AC_MSG_RESULT(no) )
@@ -326,7 +368,9 @@ AC_ARG_ENABLE(last,
 			AC_MSG_RESULT(no)
 		else
 			AC_MSG_RESULT(yes)
-			AC_DEFINE(LASTCMD)
+			AC_DEFINE([LASTCMD], [],
+					  [Define if you want to have LAST
+					   command support])
 		fi
 	],
 	AC_MSG_RESULT(no) )
@@ -339,7 +383,9 @@ AC_ARG_ENABLE(mapping,
 		else
 			MAPPING_O="mapping.o"
 			AC_MSG_RESULT(yes)
-			AC_DEFINE(MAPPING)
+			AC_DEFINE([MAPPING], [],
+					  [Define if you want to have support
+					   for user names mapping])
 		fi
 	],
 	AC_MSG_RESULT(no) )
@@ -351,7 +397,9 @@ AC_ARG_ENABLE(nonip,
 			AC_MSG_RESULT(no)			
 		else
 			AC_MSG_RESULT(yes)
-			AC_DEFINE(NONIPVIRTUALS)
+			AC_DEFINE([NONIPVIRTUALS], [],
+					  [Define if you want to have support
+					   for non-IP virtual hosting])
 		fi
 	],
 	AC_MSG_RESULT(no) )
@@ -362,7 +410,9 @@ AC_ARG_ENABLE(allowroot,
 			AC_MSG_RESULT(no)			
 		else
 			AC_MSG_RESULT(yes)
-			AC_DEFINE(ALLOWROOTLOGIN)
+			AC_DEFINE([ALLOWROOTLOGIN], [],
+					  [Define if you want to have support
+					   for "AllowRootLogin" option])
 		fi
 	],
 	AC_MSG_RESULT(no) )
@@ -373,7 +423,9 @@ AC_ARG_ENABLE(createmail,
 			AC_MSG_RESULT(no)			
 		else
 			AC_MSG_RESULT(yes)
-			AC_DEFINE(CREATEMAILDROP)
+			AC_DEFINE([CREATEMAILDROP], [],
+					  [Define if you want to have support
+					   for "CreateMailDrop" option])
 		fi
 	],
 	AC_MSG_RESULT(no) )
@@ -384,7 +436,9 @@ AC_ARG_ENABLE(ipv6,
 			AC_MSG_RESULT(no)			
 		else
 			AC_MSG_RESULT(yes)
-			AC_DEFINE(SPIPV6)
+			AC_DEFINE([SPIPV6], [],
+					  [Define if you want to have support
+					   for IPv6 protocol])
 		fi
 	],
 	AC_MSG_RESULT(no) )
@@ -395,7 +449,9 @@ AC_ARG_ENABLE(resolve,
 			AC_MSG_RESULT(no)			
 		else
 			AC_MSG_RESULT(yes)
-			AC_DEFINE(RESOLVE_HOSTNAME)
+			AC_DEFINE([RESOLVE_HOSTNAME], [],
+					  [Define if you want to have resolved
+					   peer name in logs])
 		fi
 	],
 	AC_MSG_RESULT(no) )
@@ -406,7 +462,9 @@ AC_ARG_ENABLE(connect,
 			AC_MSG_RESULT(no)
 		else
 			AC_MSG_RESULT(yes)
-			AC_DEFINE(LOG_CONNECT)
+			AC_DEFINE([LOG_CONNECT], [],
+					  [If defined server logs "connect"
+					   message])
 		fi
 	],
 	AC_MSG_RESULT(no) )
@@ -417,7 +475,9 @@ AC_ARG_ENABLE(logextend,
 			AC_MSG_RESULT(no)
 		else
 			AC_MSG_RESULT(yes)
-			AC_DEFINE(LOG_EXTEND)
+			AC_DEFINE([LOG_EXTEND], [],
+					  [Define if you want to have extended
+					   logging])
 		fi
 	], [
 	AC_MSG_RESULT(no)
@@ -429,7 +489,9 @@ AC_ARG_ENABLE(statistics,
 			AC_MSG_RESULT(no)
 		else
 			AC_MSG_RESULT(yes)
-			AC_DEFINE(STATISTICS)
+			AC_DEFINE([STATISTICS], [],
+					  [Define if you want to have support
+					   for statistics])
 		fi
 	], [
 	AC_MSG_RESULT(no)
@@ -437,3 +499,5 @@ AC_ARG_ENABLE(statistics,
 	
 
 AC_OUTPUT(Makefile doc/Makefile man/Makefile src/Makefile)
+
+# vim: sw=4 ts=4 noet
