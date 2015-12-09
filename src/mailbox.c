@@ -31,6 +31,14 @@ static const char rcsid[] = "$Id: mailbox.c,v 1.6 2000/05/13 13:25:52 jurekb Exp
 #include <sys/file.h>
 #include <fcntl.h>
 #include <errno.h>
+
+#ifdef DEBIAN
+# include <lockfile.h>
+# include <malloc.h>
+# undef HAVE_FLOCK
+# undef MAILOCK
+#endif /* DEBIAN */
+
 #ifdef MAILOCK
 #include <maillock.h>
 #endif
@@ -76,15 +84,31 @@ struct str_maildrop mb_maildrop =
 #endif
 };
 
+#ifdef DEBIAN
+static char * lockfilename = NULL;
+#define LOCK_SUFFIX ".lock"
+#endif /* DEBIAN */
+
 int unlock_mailbox(void) {
 	int retcode;
+#if defined(F_SETLK) && defined(F_SETLKW) && !defined(HAVE_FLOCK)
+	struct flock arg;
+#endif
+
+#ifdef DEBIAN
+	if (lockfilename) {
+		lockfile_remove(lockfilename);
+		free(lockfilename);
+		lockfilename = NULL;
+	}
+#endif /* DEBIAN */
+
 #ifdef HAVE_FLOCK
 #define MLNAME "mailbox: flock"
 	retcode = flock(mailboxfd, LOCK_UN);
 #else
 #if defined(F_SETLK) && defined(F_SETLKW)
 #define MLNAME "mailbox: fcntl"
-	struct flock arg;
 	
 	arg.l_type = F_UNLCK;
 	arg.l_whence = arg.l_start = arg.l_len = arg.l_pid = 0;	
@@ -94,16 +118,19 @@ int unlock_mailbox(void) {
 	retcode = lockf(mailboxfd, F_ULOCK, 0);
 #endif /* defined(F_SETLK) && defined(F_SETLKW) */
 #endif /* HAVE_FLOCK */
+
 #ifdef MAILOCK
 	mailunlock();
 #endif
 	return retcode;
 }
 
+
 int lock_mailbox(void) {
 #if defined(F_SETLK) && defined(F_SETLKW) && !defined(HAVE_FLOCK)
 	struct flock arg;
 #endif
+	int retcode;
 
 #ifdef MAILOCK
 	if (maillock(username, 1) != 0) {
@@ -113,16 +140,35 @@ int lock_mailbox(void) {
 #endif
 
 #ifdef HAVE_FLOCK
-	return flock(mailboxfd, LOCK_EX);
+	retcode = flock(mailboxfd, LOCK_EX);
 #else
 #if defined(F_SETLK) && defined(F_SETLKW)
 	arg.l_type = F_WRLCK;
 	arg.l_whence = arg.l_start = arg.l_len = arg.l_pid = 0;	
-	return fcntl(mailboxfd, F_SETLKW, &arg);
+	retcode = fcntl(mailboxfd, F_SETLKW, &arg);
 #else
-	return lockf(mailboxfd, F_LOCK, 0);
+	retcode = lockf(mailboxfd, F_LOCK, 0);
 #endif /* defined(F_SETLK) && defined(F_SETLKW) */
 #endif /* HAVE_FLOCK */
+
+#ifdef DEBIAN
+	if (retcode != 0)
+		return retcode;
+	lockfilename = (char *) malloc( strlen(maildrop_name) + sizeof(LOCK_SUFFIX) );
+	if (!lockfilename) {
+		pop_log(pop_priority, "mailbox: no memory available");
+		return -1;
+	}
+	sprintf(lockfilename, "%s" LOCK_SUFFIX, maildrop_name);
+	if (lockfile_create(lockfilename, 1, 0) != L_SUCCESS) {
+		free(lockfilename);
+		lockfilename = NULL;
+		pop_error("mailbox: lockfile_create");
+		return -1;
+	};
+	retcode = 0;
+#endif /* DEBIAN */
+	return retcode;
 }
 
 long int mb_dec(char *in) {	
@@ -344,11 +390,11 @@ int mb_parse(int compare) {
 	struct mb_message *tmp;
 	struct md5_ctx context;
 	int tmpmsgnr = 0;
-	time_t tmpmsg_time;
+	time_t tmpmsg_time = 0;
 	off_t tmpfrom_where = 0, tmpwhere = 0;
 	size_t tmpfrom_size = 0, tmpsize = 0, tmpcrlfsize = 0;
 	char tmpdigest[16];
-	int newline = 1, header, fixed;
+	int newline = 1, header = 0, fixed = 0;
 	
 	if (compare)
 		if (lseek(mailboxfd, 0, SEEK_SET) < 0) {
@@ -621,8 +667,14 @@ void mb_init(void) {
 
 void mb_release(void)
 {
-	if (mailboxfd > 0)
+	if (mailboxfd > 0) {
+		/*
+		 * Debian bug #184793 - we should unlock mailbox if server dies
+		 * robert@debian.org, Apr 4th, 2003
+		 */
+		unlock_mailbox();
 		close(mailboxfd);
+	}
 	md_free();
 }
 

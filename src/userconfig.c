@@ -30,6 +30,7 @@ static const char rcsid[] = "$Id: userconfig.c,v 1.3 2000/04/28 16:58:55 jurekb 
 
 extern char maildrop_name[];
 extern char maildrop_type[];
+extern char usersuffix[];
 #ifdef APOP
 extern char apop_secret[];
 #endif
@@ -121,12 +122,6 @@ void parse_user_cfg(char *homedir) {
 			buf[tmp - 1] = 0;
 		strtok(buf, " \t");
 		if (strcasecmp(buf, "maildrop") == 0) {
-			if (md_set == 1) {
-				memset(buf, 0, sizeof(buf));
-				close(fd);
-				pop_log(pop_priority, "user config: maildrop already set in user config file");
-				return;
-			};
 			if ((tmp2 = strtok(NULL, " \t")) == NULL) {
 				memset(buf, 0, sizeof(buf));
 				close(fd);
@@ -165,17 +160,24 @@ void parse_user_cfg(char *homedir) {
 				return;
 			};
 			strcpy(tmpmaildrop_type, tmp2);
-			md_set = 1;
+			if ((((tmp2 = strtok(NULL, " \t")) == NULL) && (usersuffix[0] == 0)) ||
+			 ((tmp2 != NULL) && (usersuffix[0] != 0) && (strcasecmp(tmp2,usersuffix) == 0))) {
+				if (md_set == 1) {
+					memset(buf, 0, sizeof(buf));
+					close(fd);
+					pop_log(pop_priority, "user config: maildrop already set in user config file");
+					return;
+				};
+
+				md_set = 1;
+				strcpy(maildrop_name, tmpmaildrop_name);
+				strcpy(maildrop_type, tmpmaildrop_type);
+			};
+
 			continue;
 		};
 #ifdef APOP
 		if (strcasecmp(buf, "APOPsecret") == 0) {
-			if (as_set == 1) {
-				memset(buf, 0, sizeof(buf));
-				close(fd);
-				pop_log(pop_priority, "user config: APOP secret already set in user config file");
-				return;
-			};
 			if ((tmp2 = strtok(NULL, " \t")) == NULL) {
 				memset(buf, 0, sizeof(buf));
 				close(fd);
@@ -215,7 +217,19 @@ void parse_user_cfg(char *homedir) {
 					tmpapop_secret[tmp3] |= (tmp2[(tmp3 * 2) + 1] - 'a' + 10);
 				tmpapop_secret[tmp3] ^= 0xff;
 			};
-			as_set = 1;
+			if ((((tmp2 = strtok(NULL, " \t")) == NULL) && (usersuffix[0] == 0))
+			 || ((tmp2 != NULL) && (usersuffix[0] != 0) && (strcasecmp(tmp2,usersuffix) == 0))) {
+				if (as_set == 1) {
+					memset(buf, 0, sizeof(buf));
+					close(fd);
+					pop_log(pop_priority, "user config: APOP secret already set in user config file");
+					return;
+				};
+
+				strcpy(apop_secret, tmpapop_secret);
+				as_set = 1;
+			};
+
 			continue;
 		};
 		memset(tmpapop_secret, 0, sizeof(tmpapop_secret));
@@ -227,12 +241,8 @@ void parse_user_cfg(char *homedir) {
 	};
 	close(fd);
 	if (md_set == 1) {
-		strcpy(maildrop_name, tmpmaildrop_name);
-		strcpy(maildrop_type, tmpmaildrop_type);
 	};
 #ifdef APOP
-	if (as_set == 1)
-		strcpy(apop_secret, tmpapop_secret);
 	memset(tmpapop_secret, 0, sizeof(tmpapop_secret));
 #endif
 	return;

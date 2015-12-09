@@ -96,10 +96,20 @@ Following options are recognized:
 .TP
 .B AllowRootLogin boolean
 Allow root login. It's disabled by default and shouldn't be changed.
+.br
+.I Debian Note:
+This option is not available in the Debian package.
 .TP
 .B UserOverride boolean
 Allow users specify their maildrops (path and type) and APOP secrets.
 It's enabled by default.
+.TP
+.B UserMailDropDelimiter string
+Specify character used to separate different maildrops for user.
+If set, user can access different maildrops, as defined in their ~/.spop3d file,
+logging as "user_name\fIUserMailDropDelimiter\fRmaildrop_name"
+(e.g. user+private, if the \fIUserMailDropDelimiter\fR is set to \fI+\fR)
+Default is empty (disables support for multiple mailboxes per user).
 .TP
 .B AllowAPOP boolean
 Users can authenticate themselves with APOP scheme. It's enabled by default.
@@ -146,6 +156,16 @@ Option is disabled by default.
 Specify path to user names mapping file (read VIRTUALS file).
 There is no default value.
 .TP
+.B UserMapPrefix string
+Specify a set of characters which should be prefixed to the username before
+it is looked up in the user mapping file.
+.br
+For example, given a username of "bar", and a \fBUserMapPrefix\fP of
+"foo-", there should be an entry in the user mapping file for "foo-bar".
+.br
+This option has no effect when DoMapping is disabled, and is a blank
+string by default.
+.TP
 .B AllowNonIP boolean
 If enabled user is allowed to specify virtual domain name in when logging.
 Read VIRTUALS file for details. Option is enabled by default.
@@ -157,7 +177,8 @@ Default value is \fI.spop3d-bull\fP.
 .TP
 .B BulletinDirectory string
 Specify path to bulletin directory. 
-Default value is ${localstatedir}/bulletins (/usr/local/var/bulletins).
+Default value is ${localstatedir}/bulletins.
+.\"(/usr/local/var/bulletins).
 .TP
 .B LogPriority string
 Set logging facility and priority. Default value is local0.notice.
@@ -165,7 +186,7 @@ Known facilities: daemon, local0, local1, ..., local7, mail, user.
 Known priorities: emerg, alert, crit, err, warning, notice, info, debug.
 facility or facility.priority combination are recognized.
 .TP
-.B AddBuletins boolean
+.B AddBulletins boolean
 Server checks for new bulletins in BulletinDirectory if enabled.
 Option is enabled by default.
 .TP
@@ -174,6 +195,13 @@ If DoMapping and RequiredMapping are enabled user _MUST_ have entry
 in user mapping file. If DoMapping is enabled and RequiredMapping is disabled
 user needn't have entry in user mapping file (no mapping is performed then).
 Option has no effect when DoMapping is disabled. Option is enabled by default.
+.TP
+.B AuthMappedUser boolean
+Controls whether authentication is performed on the username given by
+the user, or the username looked up in the user mapping file.
+.br
+The option is enabled by default, meaning that the user from the mapping
+file is used. The option has no effect when DoMapping is disabled.
 .TP
 .B LogStatistics boolean
 If enabled qpopper-like statistics are logged. At the end of each session
@@ -185,13 +213,19 @@ are logged. Option is enabled by default.
 If enabled maildrop (mailbox or maildir) will be created, when it doesn't
 exist. Option is disabled by default.
 .TP
+.B AllowUser boolean
+Allow USER/PASS authentication. This option is enabled by default.
+It's the standard method of user authentication and you probably don't
+need to disable it.
+You must have at least one authentication method enabled
+(AllowUser or AllowAPOP).
+.TP
 .RE
 .SH EXAMPLE
 .RS
 .nf
 <Global>
 	LogPriority	daemon.info
-	AllowRootLogin	yes
 	MailDropName	Maildir
 	MailDropType	maildir
 	UserBullFile	.spop3d-blurp /* It's just an example */

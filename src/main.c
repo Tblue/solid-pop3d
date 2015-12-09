@@ -175,7 +175,9 @@ struct str_option options_set[] =
 #ifdef MAPPING
 	{"UserMapFile", OP_STRING, &sp_mapfile, PATH_MAX, NULL},
 	{"DoMapping", OP_BOOLEAN, &domapping, 0, NULL},
+	{"AuthMappedUser", OP_BOOLEAN, &authmappeduser, 1, NULL},
 	{"RequiredMapping", OP_BOOLEAN, &reqmapping, 0, NULL},
+	{"UserMapPrefix", OP_STRING, &sp_usermapprefix, MAXPREFIX, NULL},
 #endif
 #ifdef NONIPVIRTUALS
 	{"AllowNonIP", OP_BOOLEAN, &allownonip, 0, NULL},
@@ -187,12 +189,17 @@ struct str_option options_set[] =
 	{"LogStatistics", OP_BOOLEAN, &logstatistics, 0, NULL},
 #endif
 	{"LogPriority", OP_STRING, &logpriority, 64, check_logpriority},
+	{"AllowUser", OP_BOOLEAN, &allowuser, 0, NULL},
+	{"UserMailDropDelimiter", OP_STRING, &usermd_delim, 2, NULL},
 	{NULL, 0, NULL, 0, NULL}
 };
 
+int allowuser = 1;
 int connection_state;
 char username[MAXARGLN + 1];
 char password[MAXARGLN + 1];
+char usersuffix[MAXARGLN + 1];
+char usermd_delim[2] = "";
 char buf[MAXCMDLN + 1];
 size_t count = 0;
 struct str_maildrop *maildrop;
@@ -208,8 +215,11 @@ char maildrop_name[PATH_MAX];
 char maildrop_type[MAXMDTYPENAMELENGTH];
 #ifdef MAPPING
 char sp_mapfile[PATH_MAX];
-int domapping = 0, reqmapping = 1;
+int domapping = 0, reqmapping = 1, authmappeduser = 1;
 char mapusername[MAXARGLN + 1];
+char origusername[MAXARGLN + 1];
+char usernamebuf[MAXARGLN + 1];
+char sp_usermapprefix[MAXPREFIX];
 #endif
 #ifdef APOP
 char apop_secret[MAXARGLN + 1];
@@ -245,6 +255,9 @@ char ahname[384];
 #endif
 #ifdef STATISTICS
 int logstatistics = 1;
+#endif
+#if defined(DEBIAN) && defined(STANDALONE)
+int standalone = 0;
 #endif
 
 void check_wccount(void) {
@@ -306,6 +319,16 @@ int expand_dir(char *dir, char *homedir) {
 				strcat(filename, mapusername);
 				tmp = tmp2 + 2;
 				break;
+			case 'o':
+				*tmp2 = 0;
+				if ((strlen(filename) + strlen(tmp) + strlen(origusername) + 1) > sizeof(filename)) {
+				    breakwhile = 1;
+				    break;
+				};
+				strcat(filename, tmp);
+				strcat(filename, origusername);
+				tmp = tmp2 + 2;
+				break;
 #endif
 			case 'd':
 				if ((tmp2[2] < '1') || (tmp2[2] > '8')) {
@@ -325,6 +348,8 @@ int expand_dir(char *dir, char *homedir) {
 				tmp = tmp2 + 3;
 				break;
 			default: ;
+				breakwhile = 1;
+				break;
 		};
 		if (breakwhile)
 			break;
@@ -385,9 +410,18 @@ void add_bulletins(char *homedir) {
 	if (fd < 0) {
 	/* It runs with user privileges, so users can do what they want */
 		pop_log(pop_priority, "can't open or create file: %.1024s", userbullfile);
+#ifdef DEBIAN
+		/*
+		 * see Debian bug #184970
+		 * robert@debian.org, Apr 4th, 2003
+		 */
+		maildrop->md_end_of_adding();
+		return;
+#else
 		pop_error("open");
 		send_error("fatal error");
 		exit(1);
+#endif
 	};
 	if (fstat(fd, &stbuf) < 0) {
 		close(fd);
@@ -550,6 +584,11 @@ void end_auth_state(char *arg) {
 void get_username(char *arg) {
 	int tmp = 0;
 
+	if (!allowuser) {
+		send_error("USER/PASS authentication not allowed");
+		check_wccount();
+		return;
+	}
 	if (strlen(arg) >= sizeof(username)) {
 		send_error("username too long");
 		check_wccount();
@@ -746,9 +785,9 @@ void read_command(char *cmd)
 void sig_handler(int number) {
 	if (number == SIGALRM)
 #ifdef LOG_EXTEND
-		pop_log(pop_priority, "autologout time elapsed - %.384s", ahname);
+		pop_log(pop_priority, "autologout time elapsed for user %.40s - %.384s", username, ahname);
 #else
-		pop_log(pop_priority, "autologout time elapsed");
+		pop_log(pop_priority, "autologout time elapsed for user %.40s", username);
 #endif
 	exit(1);
 }
@@ -998,8 +1037,9 @@ int main(int argc, char **argv)
 	socklen_t addrln;
 	struct rlimit corelimit = {0, 0};
 	struct passwd *spop3d, *userentry;
-	int tmp, tmp2;
+	int tmp, tmp2, tmp3;
 	gid_t tmpgid;
+	char *suffix;
 #ifdef APOP
 	int useapop;
 #endif
@@ -1027,18 +1067,31 @@ int main(int argc, char **argv)
 	signal(SIGUSR1, sig_handler);
 	signal(SIGUSR2, sig_handler);
 	memset(username, 0, sizeof(username));
-	memset(password, 0, sizeof(username));
+	memset(password, 0, sizeof(password));
 #ifdef MAPPING
 	memset(mapusername, 0, sizeof(mapusername));
+	memset(origusername, 0, sizeof(origusername));
+	memset(usernamebuf, 0, sizeof(usernamebuf));
 #endif
 	alarm(0);
 	umask(0077);
-	chdir("/");
+	if (chdir("/") < 0) {
+		pop_error("chdir");
+		exit(1);
+	};
 	
+#if defined(DEBIAN) && defined(STANDALONE)
+	if (!standalone) {
+		pop_openlog();
+		if (atexit(pop_closelog) < 0)
+			exit(1);
+	}
+#else
 #ifndef STANDALONE
 	pop_openlog();
 	if (atexit(pop_closelog) < 0)
 		exit(1);
+#endif
 #endif
 	if (setrlimit(RLIMIT_CORE, &corelimit) < 0) {
 		pop_error("setrlimit");
@@ -1106,8 +1159,13 @@ int main(int argc, char **argv)
 #endif
 #endif /* RESOLVE_HOSTNAME */
 #ifdef LOG_CONNECT
+#if defined(DEBIAN) && defined(STANDALONE)
+	if (!standalone)
+		pop_log(pop_priority, "connect from %.384s", ahname);
+#else
 #ifndef STANDALONE
 	pop_log(pop_priority, "connect from %.384s", ahname);
+#endif
 #endif
 #endif
 #endif /* LOG_EXTEND || LOG_CONNECT */
@@ -1180,9 +1238,23 @@ int main(int argc, char **argv)
 					};
 			};
 #endif
+			memset(usersuffix, 0, sizeof(usersuffix));
+			if (usermd_delim[0]) {
+				suffix = strchr(username, usermd_delim[0]);
+				if (suffix != NULL) {
+					tmp3 = suffix - username + 1;
+					strncpy (usersuffix, suffix + 1, sizeof(usersuffix));
+					username[tmp3-1] = 0;
+					tmp3 = 0;
+				};
+			}
 #ifdef MAPPING
 			mapusername[0] = 0;
 			if (domapping) {
+				if (sp_usermapprefix[0] != '\0') {
+					snprintf(usernamebuf, MAXARGLN, "%s%s", sp_usermapprefix, username);
+					strcpy(username,usernamebuf);
+				}
 /* map_finduser() doesn't overflow mapusername - sizeof(mapusername) = MAXARGLN + 1 */
 				if (((tmp = map_finduser(sp_mapfile, username, mapusername)) < 0) && \
 				    (reqmapping)) {
@@ -1314,9 +1386,25 @@ int main(int argc, char **argv)
 			close(tunnel[0]);
 			wait(NULL);
 			check_logpriority(logpriority);
+			memset(usersuffix, 0, sizeof(usersuffix));
+			if (usermd_delim[0]) {
+				suffix = strchr(username, usermd_delim[0]);
+				if (suffix != NULL) {
+					tmp3 = suffix - username + 1;
+					strncpy (usersuffix, suffix + 1, sizeof(usersuffix));
+					username[tmp3-1] = 0;
+					tmp3 = 0;
+				};
+			}
 #ifdef MAPPING
-			if (domapping)
+			if (domapping) {
+				strcpy(origusername,username);
+				if (sp_usermapprefix[0] != '\0') {
+					snprintf(usernamebuf, MAXARGLN, "%s%s", sp_usermapprefix, username);
+					strcpy(username,usernamebuf);
+				}
 				userentry = getpwnam(mapusername);
+			}
 			else
 				userentry = getpwnam(username);
 #else
@@ -1353,7 +1441,7 @@ int main(int argc, char **argv)
 			if (!useapop) {
 #endif
 #ifdef MAPPING
-			if (domapping)
+			if (domapping && authmappeduser)
 				tmp = sp_authenticate_user(mapusername, password);
 			else
 				tmp = sp_authenticate_user(username, password);

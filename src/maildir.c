@@ -58,6 +58,7 @@ static const char rcsid[] = "$Id: maildir.c,v 1.5 2000/05/13 13:25:52 jurekb Exp
 #include <time.h>
 #endif
 #endif
+#include <stdint.h>
 
 extern void check_wccount(void);
 
@@ -118,7 +119,7 @@ int mdir_add_message(int fd) {
 	pid_t ntmppid = getpid() + nnomsg;
 	time_t tmptime = time(NULL);
 	int nmsgfd;
-	ssize_t mcount, tmp;
+	ssize_t mcount = 0 , tmp = 0;
 	char linebuf[128];
 	
 	if (mdir_exists == 0) {
@@ -134,7 +135,7 @@ doesn't exist");
 		exit(1);
 	};
 	do {
-		snprintf(msgname, sizeof(msgname), "tmp/%u.%u.%.256s", tmptime, tmppid, hstname);
+		snprintf(msgname, sizeof(msgname), "tmp/%ju.%u.%.256s", (uintmax_t)tmptime, tmppid, hstname);
 		if ((strlen(msgname) + strlen(maildrop_name) + 2) > sizeof(filename)) {
 			close(fd);
 			pop_log(pop_priority, "maildir: message file name is too long");
@@ -257,7 +258,7 @@ doesn't exist");
 		exit(1);
 	};
 	do {
-		snprintf(msgname, sizeof(msgname), "new/%u.%u.%.256s", tmptime, ntmppid, hstname);
+		snprintf(msgname, sizeof(msgname), "new/%ju.%u.%.256s", (uintmax_t)tmptime, ntmppid, hstname);
 		if ((strlen(msgname) + strlen(maildrop_name) + 2) > sizeof(nfilename)) {
 			close(fd);
 			unlink(filename);

@@ -26,17 +26,18 @@
 #define MAXRESPLN 512
 #define MAXCMDLN 255
 #define MAXARGLN 40
+#define MAXPREFIX 16
 
 #define AUTH_STATE 0
 #define TRANSACTION_STATE 1
-#define SERVICE_NAME "spop3d"
+#define SERVICE_NAME "solid-pop3d"
 #define MAXMSGNR 10000
 #define SERVER_GREETING "Solid POP3 server ready"
 #define DEFAUTOLOGOUTTIME 60
 #define DEFWCCOUNT 5
 
 #ifdef MDMAILBOX
-#define DEFMAILDROPNAME "/var/spool/mail/%s"
+#define DEFMAILDROPNAME "/var/mail/%s"
 #else
 #define DEFMAILDROPNAME "Maildir"
 #endif
@@ -53,12 +54,12 @@
 #define POPUSER "spop3d"
 
 #define PER_SOURCE 5
-#define MAX_SESSIONS 50
+#define MAX_SESSIONS 256
 #define SOCKET_SYN_QUEUE 5
 #define MIN_DELAY 50
 #define POP3_PORT 110
 
-#define POP_IDENT "spop3d"
+#define POP_IDENT "solid-pop3d"
 #define POP_PRIORITY LOG_NOTICE
 #define POP_FACILITY LOG_LOCAL0
 #endif /* const.h */

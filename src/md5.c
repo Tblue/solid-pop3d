@@ -22,7 +22,7 @@
 
 #include <sys/types.h>
 
-#if 0				/* Get rid of implicit bcopy declaration warnings */
+#if 1				/* Get rid of implicit bcopy declaration warnings */
 #if STDC_HEADERS || defined _LIBC
 #include <stdlib.h>
 #endif

@@ -39,6 +39,105 @@ static const char rcsid[] = "$Id: pop_auth.c,v 1.2 2000/04/28 16:58:55 jurekb Ex
 #include "maildrop.h"
 #include "fdfgets.h"
 
+typedef struct  suffixes {
+	char*	suffix;		/* maildrop suffix name 				*/
+	char* 	apop_sec;	/* apop secret for maildrop			 	*/
+	char*   mdrop_type;	/* maildrop type: mailbox or maildir 			*/
+	char*   mdrop_path;	/* maildrop path 					*/
+	int 	flag;		/* should we set new apop secret for this maildrop 	*/
+	struct suffixes* next;  /* next maildrop 					*/
+} suffixes;
+
+char * xstrdup( char* s ) {
+	s = strdup(s ? s : "");
+	if (!s) {
+		fprintf(stderr, "cant' allocate memory\n");
+		exit(1);
+	}
+	return s;
+}
+
+/* adds new suffix definition to list; note the list is sorted on the suffix field */
+void add_suffix(suffixes **head, char* suffix, char* apop_sec, char* mdrop_type, char* mdrop_path)
+{
+	suffixes *p, *q;
+	int r;
+
+	if (!suffix) {
+		suffix = "";
+	}
+
+	p = *head;
+	q = NULL;   	/* q is one before p, i.e. q->next == p */
+	r = 1;
+	while (p) {
+		r = strcmp(p->suffix, suffix);
+		if (r < 0) {
+			q = p;
+			p = p->next;
+		} else {
+			break;
+		}
+	}
+
+	if ((r == 0) && (mdrop_type && p->mdrop_type)) {
+			fprintf(stderr, "%s already set%s%s\n",
+					(mdrop_type) ? "Maildrop" : "APOP secret",
+					*suffix ? " for suffix" : "" ,
+					*suffix ? suffix : ""  );
+			exit(1);
+	}
+
+	if ( r != 0 ) {
+		/* have to add new */
+		p = (suffixes*) malloc( sizeof(suffixes) );
+		if (!p) {
+			fprintf(stderr, "can't allocate memory\n");
+			exit(1);
+		}
+
+		memset(p, 0, sizeof(suffixes));
+		p->suffix = xstrdup(suffix);
+		if (!q) {
+			p->next = *head;
+			*head = p;
+		} else {
+			p->next = q->next;
+			q->next = p;
+		}
+	}
+
+	if (mdrop_type) {
+		p->mdrop_type = xstrdup(mdrop_type);
+		p->mdrop_path = xstrdup(mdrop_path);
+	} else if(apop_sec) {
+		p->apop_sec   = xstrdup(apop_sec);
+	} else {
+		p->flag = 1;
+	}
+}
+
+
+void parse_args(suffixes ** head, int argc, char** argv, int * for_all)
+{
+	char * op;
+	if (argc == 1) {
+		add_suffix(head, "", NULL, NULL, NULL);
+	}
+	while (--argc) {
+		op = argv[argc];
+		if (!strcmp(op, "-a")) {
+			*for_all = 1;
+			continue;
+		} else if (!strcmp(op, "!")) {
+			op = "";
+		}
+		add_suffix(head, op, NULL, NULL, NULL);
+	}
+}
+
+
+
 int main(int argc, char **argv) {
 	int fd, md_set = 0, linenr, fret;
 	ssize_t tmp;
@@ -47,12 +146,16 @@ int main(int argc, char **argv) {
 	char *pass;
 	char passcopy[MAXARGLN + 1];
 	char txtbuff[256], buf[128];
+	char apop_sec[128];;
 	struct rlimit corelimit = {0, 0};
 	char cfgfile[PATH_MAX];
 	struct stat stbuf;
 	char *tmp2;
-	char tmpmaildrop_type[MAXMDTYPENAMELENGTH], tmpmaildrop_name[PATH_MAX];
+	char tmpmaildrop_type[MAXMDTYPENAMELENGTH], tmpmaildrop_name[PATH_MAX], tmpapop_sec[256];
 	static char digits[] = "0123456789abcdef";
+	struct suffixes * suffix_head = NULL, * p = NULL;
+	int for_all = 0;
+
 	
 	if (setrlimit(RLIMIT_CORE, &corelimit) < 0) {
 		perror("setrlimit");
@@ -62,10 +165,14 @@ int main(int argc, char **argv) {
 		fprintf(stderr, "can't find user with UID: %u\n", getuid());
 		return 1;
 	};
+
+	parse_args(&suffix_head, argc, argv, &for_all);
+
 	username[0] = 0;
 	strncat(username, pwentry->pw_name, 8);
 	if (strlen(pwentry->pw_name) > 8)
 		fprintf(stderr, "Warning: username truncated\n");
+
 	snprintf(txtbuff, sizeof(txtbuff), "Enter NEW password for user %.40s: ", username);
 	pass = getpass(txtbuff);
 	passcopy[0] = 0;
@@ -80,6 +187,16 @@ int main(int argc, char **argv) {
 		fprintf(stderr, "Passwords don't match\n");
 		return 1;
 	};
+
+	memset(apop_sec, 0, sizeof(apop_sec));
+	tmp2 = apop_sec;
+	for (tmp = 0; tmp < strlen(passcopy); tmp++) {
+		passcopy[tmp] ^= 0xff;
+		tmp2[tmp * 2] = digits[(passcopy[tmp] >> 4) & 0x0f];
+		tmp2[(tmp * 2) + 1] = digits[passcopy[tmp] & 0x0f];
+	};
+	memset(passcopy, 0, strlen(passcopy));
+
 	if (stat(pwentry->pw_dir, &stbuf) < 0) {
 		memset(passcopy, 0, strlen(passcopy));
 		fprintf(stderr, "can't stat user home directory: %.1024s", pwentry->pw_dir);
@@ -192,47 +309,72 @@ int main(int argc, char **argv) {
 				fprintf(stderr, "no such maildrop type: %.40s", tmp2);
     				return 1;
 			};
+
 			strcpy(tmpmaildrop_type, tmp2);
-			md_set = 1;
+                        tmp2 = strtok(NULL, " \t");
+			add_suffix(&suffix_head,  tmp2,  NULL, tmpmaildrop_name, tmpmaildrop_type);
+
 			continue;
 		};
 		if (strcasecmp(buf, "APOPSecret") == 0)
+		{
+			if ((tmp2 = strtok(NULL, " \t")) != NULL) {
+				strcpy(tmpapop_sec, tmp2);
+				tmp2 = strtok(NULL, " \t");
+				add_suffix(&suffix_head, tmp2, tmpapop_sec, NULL, NULL);
+			}
+
 			continue;
+		}
 		memset(passcopy, 0, strlen(passcopy));
 		close(fd);
 		fprintf(stderr, "unknown option name, line: %u", linenr);
 		return 1;
 	};
+
 	if (lseek(fd, 0, SEEK_SET) < 0) {
 		memset(passcopy, 0, strlen(passcopy));
 		close(fd);
 		perror("lseek");
 		return 1;
 	};
-	if (md_set == 1) {
-		snprintf(txtbuff, sizeof(txtbuff), "MailDrop %.100s %.100s\n", tmpmaildrop_name, tmpmaildrop_type);
-		if (write(fd, txtbuff, strlen(txtbuff)) < 0) {
-			memset(passcopy, 0, strlen(passcopy));
-			close(fd);
-			perror("write");
-			return 1;
+
+	p = suffix_head;
+	while (p) {
+		if (p->mdrop_type && p->mdrop_path) {
+			snprintf(txtbuff, sizeof(txtbuff), "MailDrop %.100s %.100s %.100s\n",
+								p->mdrop_type,
+								p->mdrop_path,
+								p->suffix);
+			if (write(fd, txtbuff, strlen(txtbuff)) < 0) {
+				memset(passcopy, 0, strlen(passcopy));
+				close(fd);
+				perror("write");
+				return 1;
+			};
 		};
-	};
-	memset(txtbuff, 0, sizeof(txtbuff));
-	strcpy(txtbuff, "APOPSecret ");
-	tmp2 = txtbuff + strlen(txtbuff);
-	for (tmp = 0; tmp < strlen(passcopy); tmp++) {
-		passcopy[tmp] ^= 0xff;
-		tmp2[tmp * 2] = digits[(passcopy[tmp] >> 4) & 0x0f];
-		tmp2[(tmp * 2) + 1] = digits[passcopy[tmp] & 0x0f];				
-	};
-	memset(passcopy, 0, strlen(passcopy));
-	strcat(txtbuff, "\n");
-	if (write(fd, txtbuff, strlen(txtbuff)) < 0) {
-		memset(txtbuff, 0, strlen(txtbuff));
-		close(fd);
-		perror("write");
-		return 1;
+		p = p->next;
+	}
+
+	p = suffix_head;
+	while (p) {
+		if (for_all || p->flag || p->apop_sec) {
+			memset(txtbuff, 0, sizeof(txtbuff));
+			snprintf(txtbuff, sizeof(txtbuff), "APOPSecret %.100s %.100s\n",
+					for_all || p->flag ? apop_sec : p->apop_sec,
+					p->suffix);
+			if (*p->suffix && !p->mdrop_type)
+				fprintf(stderr, "Warning: no maildrop definition for `%.50s'\n", p->suffix);
+
+			if (write(fd, txtbuff, strlen(txtbuff)) < 0) {
+				memset(txtbuff, 0, strlen(txtbuff));
+				close(fd);
+				perror("write");
+				return 1;
+			};
+
+		};
+		p = p->next;
 	};
 	memset(txtbuff, 0, strlen(txtbuff));
 	if ((tmp = lseek(fd, 0, SEEK_CUR)) < 0) {

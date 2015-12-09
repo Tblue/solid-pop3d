@@ -1,16 +1,17 @@
 /* This example is very stupid. Don't use it as a base for your own 
    configuration file */
 <Global>
-	AllowRootLogin	yes
 	MailDropName	Maildir
 	MailDropType	maildir
 	UserBullFile	.spop3d-blurp /* It's just an example */
+	UserMailDropDelimiter "+"
 	ReadExpire	0
+
 </Global>
 <VirtualHost 192.168.1.1>
 	UnreadExpire	never
 	APOPServerName	jakis.tam.host.w.pl
-	MailDropName	"/var/spool/mail/%s" /* It is a comment */
+	MailDropName	"/var/mail/%s" /* It is a comment */
 	MailDropType	mailbox
 	AutoLogoutTime	5s
 	UserOverride	yes

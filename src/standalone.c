@@ -48,6 +48,9 @@ by me. */
 #endif
 
 extern int do_session(int, char **);
+#if defined(DEBIAN) && defined(STANDALONE)
+extern int standalone;
+#endif
 static volatile int blocked;
 static volatile int pending;
 int sckt;
@@ -73,7 +76,7 @@ void chld_handler(void) {
 	while ((spid = waitpid(0, NULL, WNOHANG)) > 0)
 		for (tmp = 0; tmp < MAX_SESSIONS; tmp++)
 			if (sessions[tmp].pid == spid) {
-				(volatile pid_t) sessions[tmp].pid = 0;
+				sessions[tmp].pid = 0;
 				break;
 			};
 }
@@ -103,6 +106,33 @@ int main(int argc, char **argv) {
 	time_t now;
 	pid_t spid;
 	
+#if defined(DEBIAN) && defined(STANDALONE)
+	/* Basic code pinched from Exim4's inetd detection */
+#ifdef SPIPV6
+	if (getpeername(0, (struct sockaddr *)&address.saddr_in6, &tmpaddrln) == 0) {
+		int family = address.saddr_in6.sin6_family;;
+#else
+	if (getpeername(0, (struct sockaddr *)&address, &tmpaddrln) == 0) {
+		int family = address.sin_family;;
+#endif
+		standalone = !(family == AF_INET || family == AF_INET6);
+		if (!standalone) {
+			do_session(argc,argv);
+			/* do_session should never return */
+			exit(1);
+		}
+	}
+	else {
+		standalone = 1;
+	}
+
+	for (tmp = getdtablesize(); tmp >= 0 ; --tmp)
+		close(tmp);
+	if (open("/dev/null", O_RDWR) == STDIN_FILENO) {
+		dup2(STDIN_FILENO, STDOUT_FILENO);
+		dup2(STDIN_FILENO, STDERR_FILENO);
+	}
+#endif
 	pop_openlog();
 	if (atexit(pop_closelog) < 0) {
 		pop_error("atexit");
@@ -113,7 +143,10 @@ int main(int argc, char **argv) {
 		pop_error("setrlimit");
 		exit(1);
 	};
-	chdir("/");	
+	if (chdir("/") < 0) {
+		pop_error("socket");
+		exit(1);
+	};
 	signal(SIGCHLD, sa_sig_handler);
 
 #ifdef SPIPV6
@@ -308,7 +341,7 @@ sizeof(ntopbuff)), "::ffff:", 7) == 0) ? ntopbuff + 7 : ntopbuff);
 #else
 				sessions[freeentry].addr = address.sin_addr;
 #endif
-				(volatile pid_t) sessions[freeentry].pid = spid;
+				sessions[freeentry].pid = spid;
 				sessions[freeentry].start = now;
 				sessions[freeentry].log = 0;				
 		};

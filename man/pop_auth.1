@@ -27,6 +27,8 @@ pop_auth \- set an user's APOP secret
 .SH SYNOPSIS
 .PP
 .B pop_auth
+[\-a]
+[\fI!\fP | \fIname\fP ...]
 .SH DESCRIPTION
 .PP
 .B Pop_auth
@@ -34,11 +36,19 @@ asks user for his APOP secret and stores this secret after encryption
 in ~/.spop3d file. Used encryption is very weak and protects only from
 curious system administrator who accidentialy looks at ~/.spop3d file.
 Don't use your account password as the APOP secret!!!
+.PP
+.B Pop_auth
+will set APOP secret for all maildrop \fIname\fPs specified in the command line.
+You can use the special \fI!\fP name to specifiy your default maildrop.
+If called without any arguments,
+.B pop_auth
+will set APOP secret for the default maildrop.
 .SH OPTIONS
-No options are recognized.
+.IP "\-a"
+Set the same APOP secret for all maildrops definied in ~/.spop3d
 .SH FILES
 .IP "~/.spop3d"
-User configuration file. APOP secret is writed here.
+User configuration file. APOP secret is written here.
 .SH SEE ALSO
 .PP
 .BR spop3d (8),

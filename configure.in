@@ -121,6 +121,9 @@ AC_CHECK_LIB(socket, socket, SPOPLIBS="$SPOPLIBS -lsocket")
 dnl Check for maillock() - ripped from qpopper
 AC_CHECK_LIB(mail, maillock, SPOPLIBS="$SPOPLIBS -lmail"; AC_DEFINE(MAILOCK))
 
+dnl Check for maillock() in liblockfile too for Debian - araqnid
+AC_CHECK_LIB(lockfile, maillock, SPOPLIBS="$SPOPLIBS -llockfile"; AC_DEFINE(MAILOCK))
+
 dnl Checks for authentication methods (mostly ripped from SSH)
 AC_CHECK_FUNC(crypt, [
 	crypt_found=yes] )

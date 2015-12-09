@@ -66,7 +66,9 @@ extern unsigned int wccount;
 #ifdef MAPPING
 extern int domapping;
 extern int reqmapping;
+extern int authmappeduser;
 extern char sp_mapfile[];
+extern char sp_usermapprefix[];
 extern char mapfileowner[];
 #endif
 #ifdef NONIPVIRTUALS
@@ -79,6 +81,8 @@ extern char logpriority[];
 #ifdef STATISTICS
 extern int logstatistics;
 #endif
+extern int allowuser;
+extern char usermd_delim[2];
 
 struct str_option {
 	char *name;
