@@ -70,6 +70,8 @@ int md_alloc(int size) {
 
 	if ((messages = (struct message *) malloc(sizeof(struct message) * 100)) == NULL)
 		return -1;
+	memset(messages, 0, sizeof(struct message) * 100);
+
 	if ((specific = ((char *)malloc(size * 100))) == NULL)
 		return -1;
 	maxmsgnr = 100;
@@ -91,8 +93,11 @@ int md_realloc(int size) {
 	maxmsgnr += 100;
 	if (maxmsgnr > MAXMSGNR)
 		return -1;
+
 	if ((tmp = (struct message *) realloc(messages, maxmsgnr * sizeof(struct message))) == NULL)
 		return -1;
+	memset(tmp + maxmsgnr - 100, 0, 100 * sizeof(struct message));
+
 	messages = tmp;
 	if ((tmp2 = ((char *)realloc(specific, maxmsgnr * size))) == NULL)
 		return -1;
@@ -412,3 +417,5 @@ void md_end_reply(_md_cleanup cleanup) {
 		exit(1);
 	};
 }
+
+/* vim: set ts=4 sw=4 noet: */
