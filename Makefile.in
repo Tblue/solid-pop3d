@@ -25,10 +25,10 @@ USERCONFIG_O = @USERCONFIG_O@
 VERSION = @VERSION@
 
 SUBDIRS = doc man src
-AUXFILES = config.guess config.sub install-sh missing mkinstalldirs
+AUXFILES = config.guess config.sub install-sh mkinstalldirs
 EXTRA_DIST = THANKS
 DIST_COMMON = README AUTHORS COPYING ChangeLog INSTALL Makefile.in \
-acconfig.h config.h.in configure configure.in aclocal.m4 VIRTUALS CONFIGFILE
+config.h.in configure configure.ac VIRTUALS CONFIGFILE
 
 DISTFILES = $(DIST_COMMON) $(EXTRA_DIST)
 
