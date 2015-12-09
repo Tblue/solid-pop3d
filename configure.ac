@@ -1,4 +1,4 @@
-dnl Process this file with autoconf to produce a configure script.
+# Process this file with autoconf to produce a configure script.
 AC_INIT(src/authenticate.c)
 
 PACKAGE=solid-pop3d
@@ -103,7 +103,7 @@ AC_TRY_COMPILE( [
 	AC_MSG_RESULT(yes)], [
 	AC_DEFINE_UNQUOTED(socklen_t, int)
 	AC_MSG_RESULT(no)])
-dnl Simple AC_CHECK_TYPE doesn't work.
+# Simple AC_CHECK_TYPE doesn't work.
 
 dnl Checks for library functions.
 AC_TYPE_SIGNAL
