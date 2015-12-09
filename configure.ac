@@ -204,7 +204,8 @@ fi
 
 AC_MSG_CHECKING(whether to use PAM)
 AC_ARG_ENABLE(pam,
-	[  --enable-pam            use PAM to authenticate user],
+	[AS_HELP_STRING([--enable-pam],
+					[use PAM to authenticate user])],
 	[	if test "$enableval" = "no"; then
 			AC_MSG_RESULT(no)
 		else
@@ -227,7 +228,8 @@ APOP_O=""
 POP_AUTH_1=""
 AC_MSG_CHECKING(whether to support APOP)
 AC_ARG_ENABLE(apop,
-	[  --enable-apop           compile server with APOP support], [
+	[AS_HELP_STRING([--enable-apop],
+					[compile server with APOP support])], [
 		if test "$enableval" = "no"; then
 			AC_MSG_RESULT(no)
 		else
@@ -247,7 +249,8 @@ AC_SUBST(POP_AUTH_1)
 MAILBOX_O="mailbox.o"
 AC_MSG_CHECKING(whether to support mailbox)
 AC_ARG_ENABLE(mailbox,
-	[  --enable-mailbox        compile server with mailbox support], [
+	[AS_HELP_STRING([--enable-mailbox],
+					[compile server with mailbox support])], [
 		if test "$enableval" = "no"; then
 			AC_MSG_RESULT(no)
 			MAILBOX_O=""
@@ -264,7 +267,8 @@ AC_SUBST(MAILBOX_O)
 MAILDIR_O="maildir.o"
 AC_MSG_CHECKING(whether to support maildir)
 AC_ARG_ENABLE(maildir,
-	[  --enable-maildir        compile server with maildir support], [
+	[AS_HELP_STRING([--enable-maildir],
+					[compile server with maildir support])], [
 		if test "$enableval" = "no"; then
 			AC_MSG_RESULT(no)
 			MAILDIR_O=""
@@ -282,7 +286,8 @@ CONFIGFILE_O="configfile.o"
 CONFIGSCAN_O="configscan.o"
 AC_MSG_CHECKING(whether to support configuration file)
 AC_ARG_ENABLE(configfile,
-	[  --enable-configfile     compile server with configuration file support], [
+	[AS_HELP_STRING([--enable-configfile],
+					[compile server with configuration file support])], [
 		if test "$enableval" = "no"; then
 			AC_MSG_RESULT(no)
 			CONFIGFILE_O=""
@@ -300,7 +305,8 @@ AC_SUBST(CONFIGSCAN_O)
 
 AC_MSG_CHECKING(whether to support message expiration)
 AC_ARG_ENABLE(expire,
-	[  --enable-expire         compile server with message expiration support], [
+	[AS_HELP_STRING([--enable-expire],
+					[compile server with message expiration support])], [
 		if test "$enableval" = "no"; then
 			AC_MSG_RESULT(no)
 		else
@@ -315,7 +321,8 @@ AC_ARG_ENABLE(expire,
 USERCONFIG_O="userconfig.o"
 AC_MSG_CHECKING(whether to support user configuration)
 AC_ARG_ENABLE(userconfig,
-	[  --enable-userconfig     compile server with user configuration support], [
+	[AS_HELP_STRING([--enable-userconfig],
+					[compile server with user configuration support])], [
 		if test "$enableval" = "no"; then
 			AC_MSG_RESULT(no)
 			USERCONFIG_O=""
@@ -330,7 +337,8 @@ AC_ARG_ENABLE(userconfig,
 AC_SUBST(USERCONFIG_O)
 AC_MSG_CHECKING(whether to support bulletins)
 AC_ARG_ENABLE(bulletins,
-	[  --enable-bulletins      compile server with bulletins support], [
+	[AS_HELP_STRING([--enable-bulletins],
+					[compile server with bulletins support])], [
 		if test "$enableval" = "no"; then
 			AC_MSG_RESULT(no)
 		else
@@ -344,7 +352,8 @@ AC_ARG_ENABLE(bulletins,
 AC_MSG_CHECKING(whether to build standalone version)
 STANDALONE_O=""
 AC_ARG_ENABLE(standalone,
-	[  --enable-standalone     compile standalone server], [
+	[AS_HELP_STRING([--enable-standalone],
+					[compile standalone server])], [
 		if test "$enableval" = "no"; then
 			AC_MSG_RESULT(no)
 		else
@@ -359,7 +368,8 @@ AC_ARG_ENABLE(standalone,
 AC_SUBST(STANDALONE_O)
 AC_MSG_CHECKING(whether to add support for LAST command)
 AC_ARG_ENABLE(last,
-	[  --enable-last           compile server with LAST command support], [
+	[AS_HELP_STRING([--enable-last],
+					[compile server with LAST command support])], [
 		if test "$enableval" = "no"; then
 			AC_MSG_RESULT(no)
 		else
@@ -373,7 +383,8 @@ AC_ARG_ENABLE(last,
 AC_MSG_CHECKING(whether to add support for user names mapping)
 MAPPING_O=""
 AC_ARG_ENABLE(mapping,
-	[  --enable-mapping        compile server with user names mapping support], [
+	[AS_HELP_STRING([--enable-mapping],
+					[compile server with user names mapping support])], [
 		if test "$enableval" = "no"; then
 			AC_MSG_RESULT(no)			
 		else
@@ -388,7 +399,8 @@ AC_ARG_ENABLE(mapping,
 AC_SUBST(MAPPING_O)
 AC_MSG_CHECKING(whether to add support for non-IP based virtual hosting)
 AC_ARG_ENABLE(nonip,
-	[  --enable-nonip          compile server with non-IP based virtual hosting support], [
+	[AS_HELP_STRING([--enable-nonip],
+					[compile server with non-IP based virtual hosting support])], [
 		if test "$enableval" = "no"; then
 			AC_MSG_RESULT(no)			
 		else
@@ -401,7 +413,8 @@ AC_ARG_ENABLE(nonip,
 	AC_MSG_RESULT(no) )
 AC_MSG_CHECKING(whether to add support for AllowRootLogin option)
 AC_ARG_ENABLE(allowroot,
-	[  --enable-allowroot      compile server with \"AllowRootLogin\" option support], [
+	[AS_HELP_STRING([--enable-allowroot],
+					[compile server with "AllowRootLogin" option support])], [
 		if test "$enableval" = "no"; then
 			AC_MSG_RESULT(no)			
 		else
@@ -414,7 +427,8 @@ AC_ARG_ENABLE(allowroot,
 	AC_MSG_RESULT(no) )
 AC_MSG_CHECKING(whether to add support for CreateMailDrop option)
 AC_ARG_ENABLE(createmail,
-	[  --enable-createmail     compile server with \"CreateMailDrop\" option support], [
+	[AS_HELP_STRING([--enable-createmail],
+					[compile server with "CreateMailDrop" option support])], [
 		if test "$enableval" = "no"; then
 			AC_MSG_RESULT(no)			
 		else
@@ -427,7 +441,8 @@ AC_ARG_ENABLE(createmail,
 	AC_MSG_RESULT(no) )
 AC_MSG_CHECKING(whether to add support for IPv6 protocol)
 AC_ARG_ENABLE(ipv6,
-	[  --enable-ipv6           compile server with IPv6 support], [
+	[AS_HELP_STRING([--enable-ipv6],
+					[compile server with IPv6 support])], [
 		if test "$enableval" = "no"; then
 			AC_MSG_RESULT(no)			
 		else
@@ -440,7 +455,8 @@ AC_ARG_ENABLE(ipv6,
 	AC_MSG_RESULT(no) )
 AC_MSG_CHECKING(whether to log resolved host name)
 AC_ARG_ENABLE(resolve,
-	[  --enable-resolve        log resolved host name], [
+	[AS_HELP_STRING([--enable-resolve],
+					[log resolved host name])], [
 		if test "$enableval" = "no"; then
 			AC_MSG_RESULT(no)			
 		else
@@ -453,7 +469,8 @@ AC_ARG_ENABLE(resolve,
 	AC_MSG_RESULT(no) )
 AC_MSG_CHECKING(whether to log "connect from x" message)
 AC_ARG_ENABLE(connect,
-	[  --enable-connect        log \"connect from x\" message], [
+	[AS_HELP_STRING([--enable-connect],
+					[log "connect from x" message])], [
 		if test "$enableval" = "no"; then
 			AC_MSG_RESULT(no)
 		else
@@ -466,7 +483,8 @@ AC_ARG_ENABLE(connect,
 	AC_MSG_RESULT(no) )
 AC_MSG_CHECKING(whether to add extended logging)
 AC_ARG_ENABLE(logextend,
-	[  --enable-logextend      compile server with extended logging support], [
+	[AS_HELP_STRING([--enable-logextend],
+					[compile server with extended logging support])], [
 		if test "$enableval" = "no"; then
 			AC_MSG_RESULT(no)
 		else
@@ -480,7 +498,8 @@ AC_ARG_ENABLE(logextend,
 	] )
 AC_MSG_CHECKING(whether to add support for statistics)
 AC_ARG_ENABLE(statistics,
-	[  --enable-statistics     compile server with support for statistics], [
+	[AS_HELP_STRING([--enable-statistics],
+					[compile server with support for statistics])], [
 		if test "$enableval" = "no"; then
 			AC_MSG_RESULT(no)
 		else
