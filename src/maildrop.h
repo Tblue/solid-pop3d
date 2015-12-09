@@ -67,6 +67,7 @@ struct message {
 	void *md_specific;
 	time_t msg_time;
 	int cread;
+	int missing_eol;	/* If 1, trailing newline char needs to be added on RETR. */
 };
 
 struct str_maildrop_name {
@@ -89,3 +90,5 @@ void md_retrieve(unsigned int nr, int fd, _md_cleanup cleanup);
 
 void md_end_reply(_md_cleanup cleanup);
 #endif				/* maildrop.h */
+
+/* vim: set ts=4 sw=4 noet: */

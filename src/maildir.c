@@ -240,15 +240,23 @@ doesn't exist");
 		send_error("can't read from message file");
 		exit(1);
 	};
-	if (tmp > 0)
-		if (linebuf[tmp - 1] != '\n') {
+	if (tmp > 0 && linebuf[tmp - 1] != '\n') {
+		/* Message does not end with a newline; just add one to the file we are
+		 * writing into the user's maildir. */
+		if (write(nmsgfd, "\n", 1) != 1) {
 			close(nmsgfd);
 			close(fd);
 			unlink(filename);
-			pop_log(pop_priority, "maildir: message is damaged: %.1024s", filename);
-			send_error("message is damaged");
+			pop_log(pop_priority, "maildir: can't write to message file: %.1024s", filename);
+			pop_error("maildir: write");
+			send_error("fatal errror");
 			exit(1);
-		};
+		}
+
+		/* Pretend that the newline we just added was always present. */
+		messages[msgnr - 1].size++;
+		messages[msgnr - 1].crlfsize += 2;
+	}
 	if (close(nmsgfd) < 0) {
 		close(fd);
 		unlink(filename);
@@ -441,15 +449,15 @@ void mdir_append(const char *directory) {
 			send_error("can't read from message file");
 			exit(1);
 		};
-		if (tmp4 > 0)
-			if (mbuf[tmp4 - 1] != '\n') {
-				close(messagefd);
-				closedir(dirstream);
-				mdir_release();
-				pop_log(pop_priority, "maildir: message is damaged: %.1024s", filename);
-				send_error("message is damaged");
-				exit(1);
-			};
+		if (tmp4 > 0 && mbuf[tmp4 - 1] != '\n') {
+			/* message has no trailing newline char. Pretend it had one so that we can
+			 * output correct octet counts. When the message gets RETRieved, we actually
+			 * add the missing newline char on-the-fly.
+			 */
+			messages[msgnr - 1].missing_eol = 1;
+			messages[msgnr - 1].size++;
+			messages[msgnr - 1].crlfsize += 2;
+		}
 		if (close(messagefd) < 0) {
 			closedir(dirstream);
 			mdir_release();
@@ -666,3 +674,5 @@ char *mdir_md5_uidl_message(unsigned int number, char *result) {
 	md5_finish_ctx(&context, result);
 	return result;
 }
+
+/* vim: set ts=4 sw=4 noet: */

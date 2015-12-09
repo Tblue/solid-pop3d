@@ -358,8 +358,21 @@ void md_retrieve(unsigned int nr, int fd, _md_cleanup cleanup) {
 	char mbuf[128];
 	
 	messages[nr].cread = 1;
-	size = messages[nr].size;
 	send_ok("%u octets", messages[nr].crlfsize);
+
+	size = messages[nr].size;
+	if (messages[nr].missing_eol) {
+		/* Message has no trailing newline character, so we cheat and just
+		 * add one after the normal message content has been sent to the
+		 * client. Need to decrement the message size, though, since we do
+		 * need the real message size in the loop below and that "phantom
+		 * newline" has already been included in the message size at the time
+		 * the message was parsed to make other POP3 commands display correct
+		 * octet counts (i. e. so that these counts match what we output here).
+		 */
+		size--;
+	}
+
 	newline = 1;
 	fd_initfgets();
 	while (size > 0) {
@@ -402,11 +415,22 @@ void md_retrieve(unsigned int nr, int fd, _md_cleanup cleanup) {
 			};
 		};
 	};
+
 	if (size != 0) {
 		cleanup();
 		pop_log(pop_priority, "maildrop: maildrop content has been changed");
 		exit(1);
 	};
+
+	if (messages[nr].missing_eol) {
+		/* Add the missing trailing newline characters. */
+		if (write(1, "\r\n", 2) != 2) {
+			cleanup();
+			pop_log(pop_priority, "maildrop: can't write to socket");
+			pop_error("maildrop: write");
+			exit(1);
+		}
+	}
 }
 
 void md_end_reply(_md_cleanup cleanup) {
