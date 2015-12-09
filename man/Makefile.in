@@ -37,8 +37,8 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-PACKAGE = @PACKAGE@
-VERSION = @VERSION@
+PACKAGE = @PACKAGE_NAME@
+VERSION = @PACKAGE_VERSION@
 
 man_MANS = spop3d.8 spop3d.conf.5 dot-spop3d.5 @POP_AUTH_1@
 EXTRA_DIST = spop3d.8 spop3d.conf.5 dot-spop3d.5 pop_auth.1

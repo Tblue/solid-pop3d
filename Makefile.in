@@ -20,9 +20,9 @@ top_srcdir = @top_srcdir@
 
 top_builddir = .
 
-PACKAGE = @PACKAGE@
+PACKAGE = @PACKAGE_NAME@
 USERCONFIG_O = @USERCONFIG_O@
-VERSION = @VERSION@
+VERSION = @PACKAGE_VERSION@
 
 SUBDIRS = doc man src
 AUXFILES = config.guess config.sub install-sh mkinstalldirs
@@ -37,8 +37,6 @@ GZIP_ENV = --best
 .SUFFIXES:
 distdir = $(PACKAGE)-$(VERSION)
 top_distdir = $(distdir)
-
-@SET_MAKE@
 
 all: all-recursive
 
