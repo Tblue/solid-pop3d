@@ -1,0 +1,22 @@
+#!/bin/sh
+# vim:ft=sh
+#
+set -e 
+
+# Source debconf library.
+. /usr/share/debconf/confmodule
+
+CONFIGFILE=/etc/default/solid-pop3d
+
+RUN_MODE=inetd
+[ -f "$CONFIGFILE" ] && . "$CONFIGFILE"
+
+# preserve user changes in the config file
+if [ "x$RUN_MODE" = "xdaemon" ] ; then
+	db_set solid-pop3d/run_mode daemon
+else
+	db_set solid-pop3d/run_mode inetd
+fi
+
+db_input medium solid-pop3d/run_mode || true
+db_go || true

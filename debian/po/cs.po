@@ -1,0 +1,53 @@
+#
+#    Translators, if you are not familiar with the PO format, gettext
+#    documentation is worth reading, especially sections dedicated to
+#    this format, e.g. by running:
+#         info -n '(gettext)PO Files'
+#         info -n '(gettext)Header Entry'
+#
+#    Some information specific to po-debconf are available at
+#            /usr/share/doc/po-debconf/README-trans
+#         or http://www.debian.org/intl/l10n/po-debconf/README-trans
+#
+#    Developers do not need to manually edit POT or PO files.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: solid-pop3d\n"
+"Report-Msgid-Bugs-To: solid-pop3d@packages.debian.org\n"
+"POT-Creation-Date: 2011-02-04 20:31+0100\n"
+"PO-Revision-Date: 2005-03-08 18:00+0100\n"
+"Last-Translator: Miroslav Kure <kurem@debian.cz>\n"
+"Language-Team: Czech <debian-l10n-czech@debian.org>\n"
+"Language: cs\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-2\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Type: select
+#. Choices
+#: ../templates:1001
+msgid "inetd"
+msgstr "inetd"
+
+#. Type: select
+#. Choices
+#: ../templates:1001
+msgid "daemon"
+msgstr "daemon"
+
+#. Type: select
+#. Description
+#: ../templates:1002
+msgid "How do you want to run solid-pop3d?"
+msgstr "Jak se má solid-pop3d spou¹tìt?"
+
+#. Type: select
+#. Description
+#: ../templates:1002
+msgid ""
+"The solid-pop3d POP server can run as a standalone daemon or from inetd. "
+"Running from inetd is the recommended approach."
+msgstr ""
+"POP server solid-pop3d mù¾e bì¾et jako samostatný daemon, nebo se mù¾e "
+"spou¹tìt z inetd. Spou¹tìní z inetd je doporuèený zpùsob."

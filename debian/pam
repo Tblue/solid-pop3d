@@ -1,0 +1,4 @@
+# PAM configuration for Solid POP3
+
+@include common-auth
+@include common-account

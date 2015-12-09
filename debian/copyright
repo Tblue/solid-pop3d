@@ -1,0 +1,20 @@
+This package was debianized by Steve Haslam <steve@arise.demon.co.uk> on
+Mon,  3 Jan 2000 17:22:18 +0000.
+The current package maintainer is Robert Luberda <robert@debian.org>.
+
+It was downloaded from http://solidpop3d.pld.org.pl/ .
+However the above site does no longer exist. The original source
+can be now found at ftp://dione.ids.pl/pub/solidpop3d/ .
+
+Upstream Authors:
+
+  Jerzy Bałamut <jurekb@dione.ids.pl>.  Everything as for now.
+
+  Arkadiusz Miśkiewicz.  Automake support. First version of all ".am"
+  and configure.in files.
+
+Copyright (C) 1999  Jerzy Balamut <jurekb@dione.ids.pl>
+
+License:
+
+  GPL, see /usr/share/common-licenses/GPL-2

@@ -1,0 +1,23 @@
+From: Robert Luberda <robert@debian.org>
+Date: Sun, 6 Nov 2005 16:15:00 +0100
+Subject: 15 gcc warning
+
+Fix for `implicit declaration of memcpy' gcc warnings
+---
+ src/md5.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/src/md5.c b/src/md5.c
+index 931119b..408ef3d 100644
+--- a/src/md5.c
++++ b/src/md5.c
+@@ -22,7 +22,7 @@
+ 
+ #include <sys/types.h>
+ 
+-#if 0				/* Get rid of implicit bcopy declaration warnings */
++#if 1				/* Get rid of implicit bcopy declaration warnings */
+ #if STDC_HEADERS || defined _LIBC
+ #include <stdlib.h>
+ #endif
+-- 

@@ -1,0 +1,368 @@
+solid-pop3d (0.15-26) unstable; urgency=low
+
+  * Apply patch from Simon Ruderich to handle CPPFLAGS hardening
+    flags (closes: #665483).
+  * Standards-Versions: 3.9.3 (no changes).
+
+ -- Robert Luberda <robert@debian.org>  Sun, 25 Mar 2012 19:16:01 +0200
+
+solid-pop3d (0.15-25) unstable; urgency=low
+
+  * Danish translation of the debconf templates (closes: #650854).
+  * Rename & refresh patches with gbp-pq import/export.
+  * Switch to debhelper v9 and tiny rules file.
+  * debian/control:
+    + sort dependency fields with wrap-and-sort.
+    + add VCS fields;
+    + suggests: openbsd-inetd | inet-superserver;
+    + drop build-dependency in hardening-includes, dpkg-buildflags enables
+      hardening options now by default.
+    + Standards-Version: 3.9.2 (no changes).
+
+ -- Robert Luberda <robert@debian.org>  Sat, 11 Feb 2012 23:17:10 +0100
+
+solid-pop3d (0.15-24) unstable; urgency=low
+
+  * Switch to the `3.0 (quilt) source format:
+    + remove build-time dependency on dpatch;
+    + change patch files extension from .dpatch to .patch;
+    + remove debian/README.source;
+    + remove dpatch descriptions from patch headers;
+    + remove 01_config.dpatch, use dh_autotools-dev_*config instead.
+
+  * New patches:
+    + 17_close_fds.patch: Close any open file descriptors and reopen
+      the three standard ones to /dev/null. This should prevent the daemon
+      from hanging when debconf is active (LP: #621107).
+    + 18_init_fix.patch: Fix gcc warning appeared because of 08_init.patch;
+    + 19_gcc_warnings.patch: Fix various warnings given by gcc.
+
+  * debian/rules:
+    + drop patch/unpatch target;
+    + use dpkg-buildflags for getting CFLAGS/LDFLAGS.
+    + call dh_auto_{configure,build,clean} commands;
+    + provide build-{arch,indep} targets.
+
+  * Enable hardening logic provided by the hardening-includes package; add
+    the package to build-depends.
+  * Split Choices field in debian/templates (lintian) and then unfuzzy
+    translations.
+  * Standards-Version: 3.9.1.
+  * Build with debhelper v8.
+
+ -- Robert Luberda <robert@debian.org>  Sat, 19 Feb 2011 13:49:29 +0100
+
+solid-pop3d (0.15-23) unstable; urgency=low
+
+  * Add Russian translation of debconf templates (closes: #549176).
+
+ -- Robert Luberda <robert@debian.org>  Sun, 18 Oct 2009 15:52:17 +0200
+
+solid-pop3d (0.15-22) unstable; urgency=low
+
+  * Add Spanish translation of debconf templates (closes: #537080).
+  * Add debian/README.source.
+  * Standards-Version: 3.8.3.
+  * Build with debhelper v7.
+
+ -- Robert Luberda <robert@debian.org>  Mon, 31 Aug 2009 19:54:46 +0200
+
+solid-pop3d (0.15-21) unstable; urgency=low
+
+  * Don't call db_stop (closes: #473290).
+  * Standards-Version: 3.8.0 (no changes).
+
+ -- Robert Luberda <robert@debian.org>  Sun, 07 Sep 2008 10:27:21 +0200
+
+solid-pop3d (0.15-20) unstable; urgency=low
+
+  * 16_manpage_hyphens.dpatch: fix hyphens in man pages (lintian).
+  * debian/copyright: Add copyright notice (lintian).
+
+ -- Robert Luberda <robert@debian.org>  Sat, 19 Apr 2008 18:28:08 +0200
+
+solid-pop3d (0.15-19) unstable; urgency=low
+
+  * Initial Dutch po-debconf translation (closes: #450971).
+  * Use some mirror site in debian/watch (closes: #449910), remove homepage
+    URL from description. solid-pop3d has been dead upstream for a long time,
+    so I wouldn't expect any new upstream releases.
+  * debian/rules:
+    + Don't ignore make clean error (lintian).
+    + Set LDFLAGS to `-Wl,-z,defs -Wl,--as-needed'.
+    + Add support for cross-linking.
+  * Use debhelper v6.
+  * Standards-Version: 3.7.3.
+
+ -- Robert Luberda <robert@debian.org>  Sun, 27 Jan 2008 15:24:42 +0100
+
+solid-pop3d (0.15-18) unstable; urgency=low
+
+  * Update debian/{control,watch,copyright} for alternative location
+    of the upstream source tarball as the primary site seems not to exist
+    anymore (closes: #355546).
+  * Standards-Version: 3.7.2 (no changes needed).
+
+ -- Robert Luberda <robert@debian.org>  Fri,  5 Jan 2007 21:49:13 +0100
+
+solid-pop3d (0.15-17) unstable; urgency=low
+
+  * Initial Portuguese translation for debconf messages (closes: #381678).
+  * debian/control: add dependency on update-inetd, used by the postinst
+    script.
+  * debian/init: add missing dash for the Short-Description field (lintian).
+
+ -- Robert Luberda <robert@debian.org>  Thu,  4 Jan 2007 00:04:36 +0100
+
+solid-pop3d (0.15-16.1) unstable; urgency=medium
+
+  * Non-maintainer upload to fix release critical bug.
+  * Do not fail purge if update-inet.d and deluser are
+    not available (Closes: #388661).
+
+ -- Thijs Kinkhorst <thijs@debian.org>  Sun,  1 Oct 2006 16:02:26 +0200
+
+solid-pop3d (0.15-16) unstable; urgency=low
+
+  * Enable 12_mailbox_patch.dpatch, which adds support for multiple
+    mailboxes per user (closes: #77711).
+    Many thanks to Adam D. Barratt for the patch!
+  * Slightly improve the 12_mailbox_patch.dpatch:
+    + add UserMailDropDelimiter run-time option to allow the local admin
+      to disable the multiple mailboxes (and this is the DEFAULT setting)
+      or to change the delimiter character.
+    + let pop_auth(1) know about multiple mailboxes.
+
+  * New translations of debconf templates:
+    + Vietnamese (closes: #318696)
+    + Swedish (closes: #331593).
+  * 15_gcc_warning.dpatch: Fix `implicit declaration of memcpy' warning.
+  * Update README.Debian.
+  * Made the init.d script LSB compliant.
+  * Switch debhelper compatibility level to 5.
+  * Depends on adduser (lintian).
+  * Standards-Version: 3.6.2 (no changes).
+
+ -- Robert Luberda <robert@debian.org>  Sun,  6 Nov 2005 16:13:03 +0100
+
+solid-pop3d (0.15-15) unstable; urgency=low
+
+  * 03_debian_base.dpatch: modified, fix typo in the spop3d.conf(5) man page
+    (closes: #311573).
+
+ -- Robert Luberda <robert@debian.org>  Sun,  5 Jun 2005 15:31:57 +0200
+
+solid-pop3d (0.15-14) unstable; urgency=low
+
+  * Initial Czech translation of solid-pop3d debconf messages
+    (closes: #298746). Thanks to Miroslav Kure <kurem@upcase.inf.upol.cz>.
+
+ -- Robert Luberda <robert@debian.org>  Sun, 13 Mar 2005 11:22:44 +0100
+
+solid-pop3d (0.15-13) unstable; urgency=low
+
+  * 14_gcc_4.0_amd64.dpatch: fix FTBFS on amd64 with gcc-4.0 (closes: #290462).
+
+ -- Robert Luberda <robert@debian.org>  Sun, 27 Feb 2005 18:47:50 +0100
+
+solid-pop3d (0.15-12) unstable; urgency=low
+
+  * 13_max_sessions.dpatch: Raise MAX_SESSIONS to 256 (closes: #285495).
+  * Added 12_multiple_mailbox.dpatch from Adam D. Barratt to support multiple
+    mailboxes per user (see #77711), but NOT ENABLE it yet.
+    I will enable it after sarge is released.
+  * Add debian/watch file.
+
+ -- Robert Luberda <robert@debian.org>  Wed, 29 Dec 2004 23:43:42 +0100
+
+solid-pop3d (0.15-11) unstable; urgency=low
+
+  * Add German debconf templates translation (closes: #280061).
+    Thanks to Jens Nachtigall <nachtigall@web.de>.
+
+ -- Robert Luberda <robert@debian.org>  Sun,  7 Nov 2004 15:31:02 +0100
+
+solid-pop3d (0.15-10) unstable; urgency=low
+
+  * Add Japanese debconf templates translation (closes: #251101).
+    Thanks to Hideki Yamane <henrich@samba.gr.jp>.
+  * Add source lintian override file for `cvsignore-file-in-source'.
+
+ -- Robert Luberda <robert@debian.org>  Thu,  3 Jun 2004 09:57:39 +0200
+
+solid-pop3d (0.15-9) unstable; urgency=low
+
+  * Add French debconf templates translation (closes: #232111).
+    Thanks to Rémi Pannequin <remi.pannequin@laposte.net>.
+  * README.Debian: s/userA/userX/g to stop lintian complaining
+    about spelling error.
+  * Fix typos in bug numbers in the previous changelog entry and
+    in README.Debian.
+
+ -- Robert Luberda <robert@debian.org>  Thu,  4 Mar 2004 07:56:34 +0100
+
+solid-pop3d (0.15-8) unstable; urgency=low
+
+  * Use dpatch for the package building, split previous *.diff.gz
+    into 6 logical patches in debian/patches: {02_configure, 3_debian_base,
+    04_liblockfile,05_unlock,06_autologout_username,07_allowuser}.dpatch
+
+  * Applied several patches from Adam D. Barratt
+    <debian-bts@adam-barratt.org.uk> (Thanks, Adam!):
+    + 08_init.dpatch: enable running solid-pop3d as standalone daemon
+      (closes: #77934)
+    + 09_authmappeduser.dpatch: add new AuthMappedUser configuration option
+      (closes: #228058)
+    + 10_usermapprefix.dpatch: add new UserMapPrefix configuration option
+      (closes: #228059).
+  * README.Debian: add documentation of the options above, taken from the
+    Adam's bug reports.
+
+  * Added debconf interface for asking user if he/she would like to run
+    solid-pop3d from inetd or as a daemon (based on samba package).
+  * Added /etc/defaults/solid-pop3d, created by postinst.
+
+  * 01_config.dpatch: new file taken from dpatch package examples directory
+    to update config.{guess,sub} files (closes: #227483)
+  * 11_parseloop.dpatch (new): fix infinite loop on unknown `%' sequences
+    while parsing the configuration file (backported from 0.16d).
+
+  * debian/control:
+   + change Recommends: exim to exim4, since that's the default MTA package
+     for sarge (closes: #227686).
+   + Build-Depends: add dpatch and autotools-dev.
+   + add dependency on netbase for update-inetd (closes: #223474).
+
+ -- Robert Luberda <robert@debian.org>  Mon,  2 Feb 2004 23:14:35 +0100
+
+solid-pop3d (0.15-7) unstable; urgency=low
+
+  * Add `AllowUser' option (backported from version 0.16d) which can
+    be used to disable plain text password authorization (closes: #77710).
+  * Print username in the `autologout' log lines (closes: #107927).
+  * debian/control: fix Standards-Version (closes: #225911).
+
+  * Many thanks to Adam D. Barratt <debian-bts@adam-barratt.org.uk>
+    for his patches.
+
+ -- Robert Luberda <robert@debian.org>  Mon, 12 Jan 2004 20:24:55 +0100
+
+solid-pop3d (0.15-6) unstable; urgency=low
+
+  * Convert pam file to use new standard.
+  * Add dependency on libpam-runtime (>= 0.76-13.1).
+  * Add homepage link to package description.
+  * Standards-Version: 3.6.1 (no changes).
+
+ -- Robert Luberda <robert@debian.org>  Wed,  3 Sep 2003 21:52:12 +0200
+
+solid-pop3d (0.15-5) unstable; urgency=medium
+
+  * mailbox.c: call unlock_mailbox in mb_release(), which is a atexit
+    registered function and therefore it will be called when server
+    dies for some reason (closes: #184793).
+  * main.c: don't die if we can't open or create user bulletins file;
+    we just don't show any bulletin in that case (closes: #184790).
+  * Standards-Version: 3.5.9 (no changes).
+
+ -- Robert Luberda <robert@debian.org>  Mon, 14 Apr 2003 23:08:29 +0200
+
+solid-pop3d (0.15-4) unstable; urgency=low
+
+  * mailbox.c:
+    + Use lockfile_create/lockfile_remove instead of maillock/mailunlock.
+      Solid-pop3d can handle mailboxes located anywhere, so we have to lock
+      the actual mailbox file, not /var/mail/$USER file (closes: #83376).
+    + Two changes required by the Debian Policy (section 12.6):
+      - lock mailbox with fcntl, not flock.
+      - changed order of mailbox locking: first fcntl, than lockfile_create.
+    + Revert patch included in previous releases of the package.
+      I have not idea what it was for, but I'm sure it broke the CreateMailDrop
+      option.
+
+  * Add debian/fix_manpages.sh, which (as its name says) does various fixes
+    on manpages: changes `spop3d' to `solid-pop3d' and corrects paths
+    references.
+
+  * Switch to the newest debhelper (v4).
+  * Add support for DEB_BUILD_OPTIONS.
+  * Standards-Version: 3.5.8.
+  * Update debian/copyright.
+
+ -- Robert Luberda <robert@debian.org>  Mon,  2 Dec 2002 00:11:31 +0100
+
+solid-pop3d (0.15-3) unstable; urgency=low
+
+  * Build server with almost all available options. This includes:
+     --enable-{configfile,expire,userconfig,bulletins,last,mapping},
+     --enable-{nonip,logextend,statistics}. (Closes: #141752, #75913,
+    closes: #76833, #79980, #150231).
+
+  * Changed default mailbox location from /var/spool/mail to /var/mail
+    (closes: #133408).
+  * Move /var/state/solid-pop3d to /var/lib/solid-pop3d (closes: #133406).
+  * debian/{postinst,postrm}: use getent to check for user spop3d existence.
+
+  * Minor changes in the default configuration file.
+  * Fixed grammar error in pop_auth(1) (closes: #89349).
+  * Close bugs fixed in NMU: closes: #132207, #128893.
+  * Remove emacs settings from the bottom of this changelog file.
+
+ -- Robert Luberda <robert@debian.org>  Thu, 28 Nov 2002 20:11:32 +0100
+
+solid-pop3d (0.15-2) unstable; urgency=low
+
+  * New maintainer (closes: #157260).
+  * Build-Depends on libpam-dev, so PAM support will be compiled in
+    (closes: #138137).
+  * Build-Depends on liblockfile-dev.
+  * Install VIRTUALS documentation file (closes: #140459).
+
+ -- Robert Luberda <robert@debian.org>  Wed, 27 Nov 2002 08:31:50 +0100
+
+solid-pop3d (0.15-1.1) unstable; urgency=medium
+
+  * Non Maintainer Upload
+  * Applied patch by Will Newton to fix packaging bugs. (Closes: #132207)
+  * Bumped standards version.
+  * Added build-depends on debhelper.
+
+ -- Thom May <thom@debian.org>  Sun,  3 Mar 2002 15:26:17 +0000
+
+solid-pop3d (0.15-1) unstable; urgency=low
+
+  * New upstream version (Closes: #71061)
+  * Changed PAM service name to "solid-pop3d" (Closes: #66300, #67318)
+  * I've added the --enable-createmail switch
+    solid-pop3d has to be running as "mail" group to do this though-
+    so the postinst script has been changed to add the "spop3d" user
+    in "mail" group instead of "nogroup"
+    Further, set "ChangeGID No" in the config file as well as
+    "CreateMailDrop Yes", and make sure solid-pop3d is run as
+    "root.mail" from inetd. (ick) (Closes: #62599)
+  * Use maillock() function from liblockfile to do mail locks. It was
+    previously doing fcntl/flock in blatant violation of Debian policy
+    (shoot me, please) (Closes: #68437)
+
+ -- Steve Haslam <araqnid@debian.org>  Thu, 21 Sep 2000 20:03:04 +0100
+
+solid-pop3d (0.14-2) unstable; urgency=low
+
+  * Added --enable-apop (Closes: #65178)
+
+ -- Steve Haslam <araqnid@debian.org>  Mon,  5 Jun 2000 12:40:49 +0100
+
+solid-pop3d (0.14-1) unstable; urgency=low
+
+  * New upstream version.
+  * Set --enable-createmail (Closes: #61778). Also added --enable-maildir,
+    --enable-mailbox and --enable-ipv6
+  * debian/docs: removed TODO
+
+ -- Steve Haslam <araqnid@debian.org>  Wed,  5 Apr 2000 13:19:33 +0100
+
+solid-pop3d (0.11-1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Steve Haslam <araqnid@debian.org>  Mon,  3 Jan 2000 18:16:39 +0000

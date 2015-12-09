@@ -1,0 +1,15 @@
+#!/bin/sh
+# post-removal script for Solid POP3
+
+set -e
+
+#DEBHELPER#
+
+if [ "X$1" = "Xpurge" ]; then
+	if test -x /usr/sbin/update-inetd >/dev/null 2>&1; then
+		update-inetd --pattern "spop3d" --remove pop3 || true
+	fi
+	deluser --system --quiet spop3d > /dev/null || true
+	
+	rm -f /etc/default/solid-pop3d
+fi

@@ -1,0 +1,5 @@
+# control file for the uscan(1) tool
+version=3
+http://www.netsw.org/net/mail/transport/pop/solid-pop3d-([\d\.]+)\.tar\.gz
+
+# ftp://dione.ids.pl/pub/solidpop3d/solid-pop3d-([\d\.]+)\.tar\.gz

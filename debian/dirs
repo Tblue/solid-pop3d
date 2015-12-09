@@ -1,0 +1,4 @@
+usr/bin
+usr/sbin
+etc/default
+var/lib/solid-pop3d/bulletins

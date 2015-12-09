@@ -1,0 +1,54 @@
+From: Robert Luberda <robert@debian.org>
+Date: Fri, 4 Apr 2003 20:42:00 +0200
+Subject: 05 unlock
+
+Patches for #184790 and #184793
+---
+ src/mailbox.c |    8 +++++++-
+ src/main.c    |    9 +++++++++
+ 2 files changed, 16 insertions(+), 1 deletions(-)
+
+diff --git a/src/mailbox.c b/src/mailbox.c
+index 0ec5f64..36774fe 100644
+--- a/src/mailbox.c
++++ b/src/mailbox.c
+@@ -667,8 +667,14 @@ void mb_init(void) {
+ 
+ void mb_release(void)
+ {
+-	if (mailboxfd > 0)
++	if (mailboxfd > 0) {
++		/*
++		 * Debian bug #184793 - we should unlock mailbox if server dies
++		 * robert@debian.org, Apr 4th, 2003
++		 */
++		unlock_mailbox();
+ 		close(mailboxfd);
++	}
+ 	md_free();
+ }
+ 
+diff --git a/src/main.c b/src/main.c
+index 882e234..ef9637d 100644
+--- a/src/main.c
++++ b/src/main.c
+@@ -385,9 +385,18 @@ void add_bulletins(char *homedir) {
+ 	if (fd < 0) {
+ 	/* It runs with user privileges, so users can do what they want */
+ 		pop_log(pop_priority, "can't open or create file: %.1024s", userbullfile);
++#ifdef DEBIAN
++		/*
++		 * see Debian bug #184970
++		 * robert@debian.org, Apr 4th, 2003
++		 */
++		maildrop->md_end_of_adding();
++		return;
++#else
+ 		pop_error("open");
+ 		send_error("fatal error");
+ 		exit(1);
++#endif
+ 	};
+ 	if (fstat(fd, &stbuf) < 0) {
+ 		close(fd);
+-- 

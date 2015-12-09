@@ -1,0 +1,65 @@
+#!/usr/bin/make -f
+
+BUILDDIR        := DEB-BUILD
+DH_AUTO_OPTIONS := -v -Sautoconf -B$(BUILDDIR) --parallel
+
+DESTDIR         := $(CURDIR)/debian/$(shell dh_listpackages)
+
+CFLAGS          := $(shell dpkg-buildflags --get CFLAGS)
+# The build system doesn't use CPPFLAGS, pass them to CFLAGS to enable the
+# missing (hardening) flags.
+CFLAGS          += $(shell dpkg-buildflags --get CPPFLAGS)
+CFLAGS          += -DDEBIAN -Wall
+
+LDFLAGS         := $(shell dpkg-buildflags --get LDFLAGS)
+LDFLAGS         += -Wl,-z,defs -Wl,--as-needed
+
+%:
+	dh "$@"
+
+override_dh_auto_configure: $(BUILDDIR)/configure-stamp
+$(BUILDDIR)/configure-stamp:
+	 rm -f .pc/.*unapply # see bug#649521
+	
+	dh_autotools-dev_updateconfig
+	
+	CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)" \
+	dh_auto_configure $(DH_AUTO_OPTIONS) -- \
+	        --localstatedir=/var/lib/solid-pop3d \
+	        --program-transform-name="s/^spop3d$$/solid-pop3d/" \
+	        --enable-pam \
+	        --enable-apop \
+	        --enable-mailbox \
+	        --enable-maildir \
+	        --enable-configfile \
+	        --enable-expire \
+	        --enable-userconfig \
+	        --enable-bulletins \
+	        --enable-last \
+	        --enable-mapping \
+	        --enable-nonip \
+	        --enable-createmail \
+	        --enable-ipv6 \
+	        --enable-resolve \
+	        --enable-connect \
+	        --enable-logextend \
+	        --enable-statistics \
+	        --enable-standalone \
+	        # --enable-allowroot
+	touch "$@"
+
+override_dh_auto_build:
+	dh_auto_build $(DH_AUTO_OPTIONS)
+
+override_dh_auto_clean:
+	rm -f $(BUILDDIR)/configure-stamp
+	
+	dh_auto_clean $(DH_AUTO_OPTIONS)
+	dh_autotools-dev_restoreconfig
+
+override_dh_auto_install:
+	dh_auto_install $(DH_AUTO_OPTIONS) --destdir="$(DESTDIR)"
+	
+	dh_install debian/spop3d.conf etc
+	
+	sh debian/fix_manpages.sh $(DESTDIR)

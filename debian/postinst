@@ -1,0 +1,53 @@
+#!/bin/sh
+# post-installation script for Solid POP3
+
+set -e
+
+. /usr/share/debconf/confmodule
+
+DEFAULTSFILE=/etc/default/solid-pop3d
+
+if [ "X$1" = "Xconfigure" ] ; then
+	db_get solid-pop3d/run_mode || true
+	RUN_MODE="$RET"
+
+	# Create spop3d system user
+	getent passwd spop3d > /dev/null || \
+		adduser --quiet --system --home /var/lib/solid-pop3d \
+			--gecos 'Solid POP3 Server' --ingroup mail spop3d
+
+
+	if [ ! -e "$DEFAULTSFILE" ] ; then
+		echo "Generating $DEFAULTSFILE..." 1>&2
+		cat >"$DEFAULTSFILE" <<-EOF
+		# Defaults for solid-pop3d initscript
+		# sourced by /etc/init.d/solid-pop3d
+		# installed at $DEFAULTSFILE by the maintainer scripts
+		#
+		
+		# How should the spolid-pop3d server run?
+		# Possible values are "inetd" (default) or "daemon".
+		# Please note that any other value will be automatically
+		# overwritten by the debconf script when the package 
+		# is upgraded or when you run \`dpkg-reconfigure solid-pop3d'
+		RUN_MODE="$RUN_MODE"
+		EOF
+		chmod a+r "$DEFAULTSFILE"
+	else
+		TMPFILE="$DEFAULTSFILE.dpkg-tmp"
+		sed -e "s/^[[:space:]]*RUN_MODE[[:space:]]*=.*/RUN_MODE=\"${RUN_MODE}\"/" \
+		        < "$DEFAULTSFILE" > "$TMPFILE"
+		chmod a+r "$TMPFILE"
+		mv -f "$TMPFILE" "$DEFAULTSFILE"
+	fi
+	
+	if [ "$RUN_MODE" = "inetd" ] ; then
+		# Add service to /etc/inetd.conf
+		update-inetd --group MAIL \
+		    --add 'pop3\tstream\ttcp\tnowait\troot.mail\t/usr/sbin/tcpd\t/usr/sbin/solid-pop3d'
+	else
+		update-inetd --disable pop3
+	fi
+fi	
+
+#DEBHELPER#

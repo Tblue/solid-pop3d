@@ -1,0 +1,14 @@
+#!/bin/sh
+# pre-removal script for Solid POP3
+
+set -e
+
+#DEBHELPER#
+
+case "X$1" in 
+	Xupgrade|Xremove)
+		update-inetd --disable pop3
+		;;
+	*)
+		;;
+esac

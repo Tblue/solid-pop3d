@@ -1,0 +1,7 @@
+Template: solid-pop3d/run_mode
+Type: select
+__Choices: inetd, daemon
+Default: inetd
+_Description: How do you want to run solid-pop3d?
+ The solid-pop3d POP server can run as a standalone daemon or from inetd.
+ Running from inetd is the recommended approach.

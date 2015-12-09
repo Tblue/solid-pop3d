@@ -1,0 +1,14 @@
+#!/bin/sh
+# pre-installation script for Solid POP3
+
+set -e
+
+#DEBHELPER#
+
+if [ "X$1" = "Xupgrade" ] ; then
+	if [ -d /var/state/solid-pop3d ] && [ ! -e /var/lib/solid-pop3d ] ; then
+		mv /var/state/solid-pop3d /var/lib/solid-pop3d
+		chmod 755 /var/lib/solid-pop3d
+		chown root:root /var/lib/solid-pop3d
+	fi
+fi

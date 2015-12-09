@@ -1,0 +1,34 @@
+Source: solid-pop3d
+Section: mail
+Priority: extra
+Maintainer: Robert Luberda <robert@debian.org>
+Build-Depends: autotools-dev,
+               debhelper (>= 9),
+               liblockfile-dev (>= 1.02),
+               libpam0g-dev (>= 0.76-14)
+Standards-Version: 3.9.3
+Vcs-Git: git://anonscm.debian.org/users/robert/solid-pop3d.git
+Vcs-Browser: http://anonscm.debian.org/gitweb/?p=users/robert/solid-pop3d.git
+
+Package: solid-pop3d
+Architecture: any
+Depends: adduser,
+         libpam-runtime (>= 0.76-14),
+         lsb-base(>= 3.0-6),
+         netbase,
+         update-inetd,
+         ${misc:Depends},
+         ${shlibs:Depends}
+Provides: pop3-server
+Conflicts: pop3-server
+Recommends: exim4 | mail-transport-agent
+Suggests: openbsd-inetd | inet-superserver
+Description: POP3 server supporting Maildir, PAM, vhosting
+ The Solid POP3 Server is an implementation of a Post Office Protocol version 3
+ server that has flexibility as its main goal. The server is easily
+ configurable and has support for features such as:
+  - APOP authentication scheme
+  - virtual hosting
+  - maildir and mailbox handling
+  - bulletins
+  - expiration of messages

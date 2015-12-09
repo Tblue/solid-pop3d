@@ -1,0 +1,44 @@
+# Portuguese translation for solid-pop3d's debconf messages.
+# Released under the same license as the solid-pop3d package.
+# Luísa Lourenço <kikentai@gmail.com>, 2006.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: solid-pop3d\n"
+"Report-Msgid-Bugs-To: solid-pop3d@packages.debian.org\n"
+"POT-Creation-Date: 2011-02-04 20:31+0100\n"
+"PO-Revision-Date: 2006-08-03 14:25+0000\n"
+"Last-Translator: Luísa Lourenço <kikentai@gmail.com>\n"
+"Language-Team: Portuguese <traduz@debianpt.org>\n"
+"Language: pt\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Type: select
+#. Choices
+#: ../templates:1001
+msgid "inetd"
+msgstr "inetd"
+
+#. Type: select
+#. Choices
+#: ../templates:1001
+msgid "daemon"
+msgstr "daemon"
+
+#. Type: select
+#. Description
+#: ../templates:1002
+msgid "How do you want to run solid-pop3d?"
+msgstr "Como deseja correr o solid-pop3d?"
+
+#. Type: select
+#. Description
+#: ../templates:1002
+msgid ""
+"The solid-pop3d POP server can run as a standalone daemon or from inetd. "
+"Running from inetd is the recommended approach."
+msgstr ""
+"O servidor de POP do solid-pop3d pode correr como um daemon independente ou "
+"pelo inetd. Correr pelo inetd é a maneira recomendada."

@@ -1,0 +1,23 @@
+From: Robert Luberda <robert@debian.org>
+Date: Wed, 29 Dec 2004 23:59:00 +0100
+Subject: 13 max sessions
+
+Raise MAX_SESSIONS (Bug#285495)
+---
+ src/const.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/src/const.h b/src/const.h
+index 75de5b0..be4068c 100644
+--- a/src/const.h
++++ b/src/const.h
+@@ -54,7 +54,7 @@
+ #define POPUSER "spop3d"
+ 
+ #define PER_SOURCE 5
+-#define MAX_SESSIONS 50
++#define MAX_SESSIONS 256
+ #define SOCKET_SYN_QUEUE 5
+ #define MIN_DELAY 50
+ #define POP3_PORT 110
+-- 

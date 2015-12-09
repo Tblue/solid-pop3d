@@ -1,0 +1,95 @@
+solid-pop3d for Debian
+======================
+
+Note that the upstream package calls the executable and the PAM
+service "spop3d". In the Debian package, they have been both renamed
+to "solid-pop3d" for consistency with the package name.  The config
+file is still /etc/spop3d.conf because that's harder to change...
+
+
+New configuration options
+-------------------------
+
+Thanks to Adam D. Barratt <debian-bts@adam-barratt.org.uk>, this Debian
+package contains some improvements in comparison to the upstream version.
+One of them are new configuration options, namely AuthMappedUser and
+UserMapPrefix.  Though they are documented in the spop3d.conf(5) man page,
+I decided to put here their longer descriptions, as written by Adam in his
+bug reports (bugs #228085 and #228059).
+
+
+* AuthMappedUser
+  --------------
+  Briefly, this feature allows the administrator to control whether the
+  username supplied by the user, or that looked up in the user mapping file
+  (the default) is used for authentication.
+
+  e.g. given a mapping file such as:
+
+  user1:userX
+  user2:userX
+  user3:userY
+
+  the default is still the same as without the patch; that is, if a user logs
+  in as `user1', then the mapped username `userX' is used for authentication.
+
+  If `AuthMappedUser no' is set, then when a user logs in as `user1', that is
+  the username that is used for authentication.
+
+
+* UserMapPrefix
+  -------------
+  This allows a prefix (of up to 16 characters) to be specified, which is
+  added to the username before it is looked up in the user mapping file.
+
+  For example, given a mapping file such as
+
+  dom1-user1:foo
+  dom2-user1:bar
+
+  and a configuration file containing
+
+  <VirtualHost domain1>
+          DoMapping        true
+          MailDropName     /var/mail/domain1/%m
+          UserMapPrefix    dom1-
+          UserMapFile      /etc/mail/domains.map
+  </VirtualHost>
+
+  <VirtualHost domain2>
+          DoMapping        true
+          MailDropName     /var/mail/domain2/%m
+          UserMapPrefix    dom2-
+          UserMapFile      /etc/mail/domains.map
+  </VirtualHost>
+
+  then when a user logs in as `user1@domain1', this will be converted to
+  `dom1-user1', which will then be looked up in the mapping file. Similarly, a
+  user logging in as `user1@domain2' will be converted to `dom2-user1' before
+  mapping occurs.
+
+  This allows a single mapping file to be used for multiple (or all) domains,
+  without any danger of usernames overlapping.  When used in conjunction with
+  PAM and a pwdfile also allows a single pwdfile to be used across multiple
+  domains, without incurring the problems that username overlap causes in
+  this case (the password for user1@domain1 also authenticates user1@domain2,
+  and vice versa).
+
+* %o format specifier
+  -------------------
+
+  As a result of the above change, when `UserMapPrefix' is used, `%s'
+  (containing the username used as the key for mapping) now contains the
+  supplied prefix. Therefore, the patch also adds an additional format
+  specifier `%o', which returns the username with the prefix removed.
+
+
+* UserMailDropDelimiter
+  ---------------------
+  This option specifies single character used to  separate different
+  maildrops for user. If set, users can access different maildrops,
+  as defined in their ~/.spop3d file, putting the specified character 
+  between  user's name and maildrop's name in their login name
+  (e.g.user+private). See Bug#77711.
+
+ -- Robert Luberda <robert@debian.org>  Sun,  6 Nov 2005 13:16:24 +0100
