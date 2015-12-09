@@ -1,0 +1,198 @@
+# Makefile.in generated automatically by automake 1.4a from Makefile.am
+# Modified by Jerzy Balamut <jurekb@dione.ids.pl>
+# $Id: Makefile.in,v 1.2 2000/04/17 19:38:03 jurekb Exp $
+
+# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# This Makefile.in is free software; the Free Software Foundation
+# gives unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
+
+SHELL = @SHELL@
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+prefix = @prefix@
+mandir = @mandir@
+
+DESTDIR =
+
+top_builddir = ..
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+INSTALL_STRIP_FLAG =
+transform = @program_transform_name@
+
+NORMAL_INSTALL = :
+PRE_INSTALL = :
+POST_INSTALL = :
+NORMAL_UNINSTALL = :
+PRE_UNINSTALL = :
+POST_UNINSTALL = :
+PACKAGE = @PACKAGE@
+VERSION = @VERSION@
+
+man_MANS = spop3d.8 spop3d.conf.5 dot-spop3d.5 @POP_AUTH_1@
+EXTRA_DIST = spop3d.8 spop3d.conf.5 dot-spop3d.5 pop_auth.1
+mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+man1dir = $(mandir)/man1
+man5dir = $(mandir)/man5
+man8dir = $(mandir)/man8
+MANS = $(man_MANS)
+
+NROFF = nroff
+DIST_COMMON = Makefile.in
+
+
+DISTFILES = $(DIST_COMMON) $(EXTRA_DIST)
+
+all: $(MANS)
+.SUFFIXES:
+
+install-man1:
+	$(mkinstalldirs) $(DESTDIR)$(man1dir)
+	@list='$(man1_MANS)'; \
+	l2='$(man_MANS)'; for i in $$l2; do \
+	  case "$$i" in \
+	    *.1*) list="$$list $$i" ;; \
+	  esac; \
+	done; \
+	for i in $$list; do \
+	  if test -f $(srcdir)/$$i; then file=$(srcdir)/$$i; \
+	  else file=$$i; fi; \
+	  ext=`echo $$i | sed -e 's/^.*\\.//'`; \
+	  inst=`echo $$i | sed -e 's/\\.[0-9a-z]*$$//'`; \
+	  inst=`echo $$inst | sed '$(transform)'`.$$ext; \
+	  echo " $(INSTALL_DATA) $$file $(DESTDIR)$(man1dir)/$$inst"; \
+	  $(INSTALL_DATA) $$file $(DESTDIR)$(man1dir)/$$inst; \
+	done
+
+uninstall-man1:
+	@list='$(man1_MANS)'; \
+	l2='$(man_MANS)'; for i in $$l2; do \
+	  case "$$i" in \
+	    *.1*) list="$$list $$i" ;; \
+	  esac; \
+	done; \
+	for i in $$list; do \
+	  ext=`echo $$i | sed -e 's/^.*\\.//'`; \
+	  inst=`echo $$i | sed -e 's/\\.[0-9a-z]*$$//'`; \
+	  inst=`echo $$inst | sed '$(transform)'`.$$ext; \
+	  echo " rm -f $(DESTDIR)$(man1dir)/$$inst"; \
+	  rm -f $(DESTDIR)$(man1dir)/$$inst; \
+	done
+
+install-man5:
+	$(mkinstalldirs) $(DESTDIR)$(man5dir)
+	@list='$(man5_MANS)'; \
+	l2='$(man_MANS)'; for i in $$l2; do \
+	  case "$$i" in \
+	    *.5*) list="$$list $$i" ;; \
+	  esac; \
+	done; \
+	for i in $$list; do \
+	  if test -f $(srcdir)/$$i; then file=$(srcdir)/$$i; \
+	  else file=$$i; fi; \
+	  ext=`echo $$i | sed -e 's/^.*\\.//'`; \
+	  inst=`echo $$i | sed -e 's/\\.[0-9a-z]*$$//'`; \
+	  inst=`echo $$inst | sed '$(transform)'`.$$ext; \
+	  echo " $(INSTALL_DATA) $$file $(DESTDIR)$(man5dir)/$$inst"; \
+	  $(INSTALL_DATA) $$file $(DESTDIR)$(man5dir)/$$inst; \
+	done
+
+uninstall-man5:
+	@list='$(man5_MANS)'; \
+	l2='$(man_MANS)'; for i in $$l2; do \
+	  case "$$i" in \
+	    *.5*) list="$$list $$i" ;; \
+	  esac; \
+	done; \
+	for i in $$list; do \
+	  ext=`echo $$i | sed -e 's/^.*\\.//'`; \
+	  inst=`echo $$i | sed -e 's/\\.[0-9a-z]*$$//'`; \
+	  inst=`echo $$inst | sed '$(transform)'`.$$ext; \
+	  echo " rm -f $(DESTDIR)$(man5dir)/$$inst"; \
+	  rm -f $(DESTDIR)$(man5dir)/$$inst; \
+	done
+
+install-man8:
+	$(mkinstalldirs) $(DESTDIR)$(man8dir)
+	@list='$(man8_MANS)'; \
+	l2='$(man_MANS)'; for i in $$l2; do \
+	  case "$$i" in \
+	    *.8*) list="$$list $$i" ;; \
+	  esac; \
+	done; \
+	for i in $$list; do \
+	  if test -f $(srcdir)/$$i; then file=$(srcdir)/$$i; \
+	  else file=$$i; fi; \
+	  ext=`echo $$i | sed -e 's/^.*\\.//'`; \
+	  inst=`echo $$i | sed -e 's/\\.[0-9a-z]*$$//'`; \
+	  inst=`echo $$inst | sed '$(transform)'`.$$ext; \
+	  echo " $(INSTALL_DATA) $$file $(DESTDIR)$(man8dir)/$$inst"; \
+	  $(INSTALL_DATA) $$file $(DESTDIR)$(man8dir)/$$inst; \
+	done
+
+uninstall-man8:
+	@list='$(man8_MANS)'; \
+	l2='$(man_MANS)'; for i in $$l2; do \
+	  case "$$i" in \
+	    *.8*) list="$$list $$i" ;; \
+	  esac; \
+	done; \
+	for i in $$list; do \
+	  ext=`echo $$i | sed -e 's/^.*\\.//'`; \
+	  inst=`echo $$i | sed -e 's/\\.[0-9a-z]*$$//'`; \
+	  inst=`echo $$inst | sed '$(transform)'`.$$ext; \
+	  echo " rm -f $(DESTDIR)$(man8dir)/$$inst"; \
+	  rm -f $(DESTDIR)$(man8dir)/$$inst; \
+	done
+install-man: $(MANS)
+	@$(NORMAL_INSTALL)
+	$(MAKE) install-man1 install-man5 install-man8
+uninstall-man:
+	@$(NORMAL_UNINSTALL)
+	$(MAKE) uninstall-man1 uninstall-man5 uninstall-man8
+
+distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
+
+subdir = man
+
+distdir: $(DISTFILES)
+	@for file in $(DISTFILES); do \
+	  d=$(srcdir); \
+	  if test -d $$d/$$file; then \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
+	  else \
+	    test -f $(distdir)/$$file \
+	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
+	    || cp -p $$d/$$file $(distdir)/$$file || :; \
+	  fi; \
+	done
+
+install: install-man
+uninstall: uninstall-man
+installdirs:
+	$(mkinstalldirs)  $(DESTDIR)$(mandir)/man1 $(DESTDIR)$(mandir)/man5 \
+		$(DESTDIR)$(mandir)/man8
+
+
+mostlyclean:
+
+clean:
+
+distclean:
+	-rm -f Makefile $(CONFIG_CLEAN_FILES)
+	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
+
+maintainer-clean: distclean
+	@echo "This command is intended for maintainers to use;"
+	@echo "it deletes files that may require special tools to rebuild."

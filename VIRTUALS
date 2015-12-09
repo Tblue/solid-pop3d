@@ -1,0 +1,72 @@
+There are 2 types of virtual hosting implemented in this server:
+
+    - IP based virtual hosting: read spop3d(5).conf manual for details.
+    - non-IP based virtual hosting: user is logged as username@host.name.com
+      or username%host.name.com if POP3 client doesn't allow to use '@'
+      in username. host.name.com is called "virtual domain name".
+
+
+Virtual hosting is available only if you support for configuration file
+is compiled in (./configure --enable-configfile). If you want to have support
+for non-IP based virtual hosting, run ./configure with --enable-nonip option.
+
+
+Configuration file is parsed before authentication state (VirtualHosts blocks
+with right IP address are parsed). If in authentication state user specifies
+virtual domain name (username%host.name.com) and non-IP based virtual hosting
+is allowed (AllowNonIP option), configuration is parsed second 
+time (VirtualHosts blocks with right virtual domain name are parsed too).
+
+
+
+
+User names mapping:
+
+User names mapping file contains username:maptousername pairs.
+Each pair in separate line. Example (stupid):
+
+jurek:jurekb
+balamut:jurekb
+ktostam:jakis
+
+You can enable user names mapping through DoMapping option.
+You can use user name and mapped user name in MailDropName option (and others
+too). Example (non-IP and based virtual hosting, user names mapping):
+
+
+
+/usr/local/etc/spop3d.conf:
+
+
+
+<Global>
+	AllowNonIP	true
+</Global>
+
+<VirtualHost 192.168.1.1 jakis.tam.host.w.pl>
+	MailDropName	/var/mail/%m-%s
+	MailDropType	mailbox
+	AllowNonIP	false
+	DoMapping	true
+	MapUserFile	/usr/local/etc/pop3/mapped.users
+</VirtualHost>
+
+
+/usr/local/etc/pop3/mapped.users:
+
+
+jurek:jurekb
+balamut:jurekb
+ktostam:jakis
+
+
+If you are connected to 192.168.1.1, you can't use non-IP based virtual hosting
+(AllowNonIP false), but if you are connected to other adress, you can
+specify virtual domain name. For example: if you log in as
+balamut%jakis.tam.host.w.pl, maildrop name will be /var/mail/jurekb-balamut
+If you connect to 192.168.1.1, and log in as balamut, maildrop name will be
+/var/mail/jurekb-balamut too.
+
+
+Some options (APOPServerName) have no effect in non-IP based virtual hosting,
+because they are parsed after authentication state.

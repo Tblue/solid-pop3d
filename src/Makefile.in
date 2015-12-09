@@ -1,0 +1,237 @@
+# Makefile.in generated automatically by automake 1.4a from Makefile.am
+# Modified by Jerzy Balamut <jurekb@dione.ids.pl>
+# $Id: Makefile.in,v 1.3 2000/04/20 21:02:47 jurekb Exp $
+
+# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# This Makefile.in is free software; the Free Software Foundation
+# gives unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
+
+
+SHELL = @SHELL@
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+sbindir = @sbindir@
+sysconfdir = @sysconfdir@
+localstatedir = @localstatedir@
+
+DESTDIR =
+
+top_builddir = ..
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_STRIP_FLAG =
+transform = @program_transform_name@
+
+NORMAL_INSTALL = :
+PRE_INSTALL = :
+POST_INSTALL = :
+NORMAL_UNINSTALL = :
+PRE_UNINSTALL = :
+POST_UNINSTALL = :
+APOP_O = @APOP_O@
+STANDALONE_O = @STANDALONE_O@
+SPOPLIBS = @SPOPLIBS@
+CC = @CC@
+CONFIGFILE_O = @CONFIGFILE_O@
+MAILBOX_O = @MAILBOX_O@
+MAILDIR_O = @MAILDIR_O@
+PACKAGE = @PACKAGE@
+POP_AUTH = @POP_AUTH@
+USERCONFIG_O = @USERCONFIG_O@
+VERSION = @VERSION@
+
+sbin_PROGRAMS =	spop3d
+
+
+bin_PROGRAMS = @POP_AUTH@
+
+
+noinst_HEADERS = apop.h authenticate.h cmds.h configfile.h const.h fdfgets.h \
+log.h mailbox.h maildir.h maildrop.h md5.h includes.h options.h response.h \
+userconfig.h mapping.h spipv6.h
+
+
+spop3d_SOURCES = authenticate.c cmds.c log.c fdfgets.c maildrop.c main.c md5.c \
+memops.c options.c response.c vsnprintf.c
+
+
+EXTRA_spop3d_SOURCES = apop.c mailbox.c maildir.c userconfig.c configfile.c \
+standalone.c mapping.c
+
+
+spop3d_DEPENDENCIES = @APOP_O@ @MAILBOX_O@ @MAILDIR_O@ @USERCONFIG_O@ \
+@CONFIGFILE_O@ @STANDALONE_O@ @MAPPING_O@
+
+
+spop3d_LDADD = @APOP_O@ @MAILBOX_O@ @MAILDIR_O@ @USERCONFIG_O@ @CONFIGFILE_O@ \
+@STANDALONE_O@ @MAPPING_O@ @SPOPLIBS@
+
+pop_auth_SOURCES = pop_auth.c fdfgets.c vsnprintf.c
+
+CLEANFILES = pop_auth
+
+mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+CONFIG_HEADER = ../config.h
+CONFIG_CLEAN_FILES = 
+PROGRAMS = $(bin_PROGRAMS) $(sbin_PROGRAMS)
+
+
+DEFS = @DEFS@ -DDEFCONFIGFILENAME=\"$(sysconfdir)/spop3d.conf\" \
+-DBULLDIR=\"$(localstatedir)/bulletins/\" -I. -I$(srcdir) -I..
+LDFLAGS = @LDFLAGS@
+LIBS = @LIBS@
+pop_auth_OBJECTS =  pop_auth.o fdfgets.o vsnprintf.o
+spop3d_OBJECTS = authenticate.o cmds.o log.o fdfgets.o maildrop.o main.o \
+md5.o memops.o options.o response.o vsnprintf.o
+CFLAGS = @CFLAGS@
+COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(CCLD) $(CFLAGS) $(LDFLAGS) -o $@
+HEADERS =  $(noinst_HEADERS)
+
+DIST_COMMON = Makefile.in
+
+DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(EXTRA_DIST)
+
+SOURCES = $(pop_auth_SOURCES) $(spop3d_SOURCES) $(EXTRA_spop3d_SOURCES)
+OBJECTS = $(pop_auth_OBJECTS) $(spop3d_OBJECTS)
+
+all: all-redirect
+
+.SUFFIXES:
+.SUFFIXES: .S .c .o .s
+
+clean-binPROGRAMS:
+	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
+
+distclean-binPROGRAMS:
+
+maintainer-clean-binPROGRAMS:
+
+install-binPROGRAMS: $(bin_PROGRAMS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(bindir)
+	@list='$(bin_PROGRAMS)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo "  $(INSTALL_PROGRAM) $(INSTALL_STRIP_FLAG) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`"; \
+	     $(INSTALL_PROGRAM) $(INSTALL_STRIP_FLAG) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	  else :; fi; \
+	done
+
+uninstall-binPROGRAMS:
+	@$(NORMAL_UNINSTALL)
+	list='$(bin_PROGRAMS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	done
+
+clean-sbinPROGRAMS:
+	-test -z "$(sbin_PROGRAMS)" || rm -f $(sbin_PROGRAMS)
+
+distclean-sbinPROGRAMS:
+
+maintainer-clean-sbinPROGRAMS:
+
+install-sbinPROGRAMS: $(sbin_PROGRAMS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(sbindir)
+	@list='$(sbin_PROGRAMS)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo "  $(INSTALL_PROGRAM) $(INSTALL_STRIP_FLAG) $$p $(DESTDIR)$(sbindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`"; \
+	     $(INSTALL_PROGRAM) $(INSTALL_STRIP_FLAG) $$p $(DESTDIR)$(sbindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	  else :; fi; \
+	done
+
+uninstall-sbinPROGRAMS:
+	@$(NORMAL_UNINSTALL)
+	list='$(sbin_PROGRAMS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(sbindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	done
+
+.c.o:
+	$(COMPILE) -c $<
+
+.s.o:
+	$(COMPILE) -c $<
+
+.S.o:
+	$(COMPILE) -c $<
+
+clean-compile:
+	-rm -f *.o core *.core
+
+distclean-compile:
+	-rm -f *.tab.c
+
+maintainer-clean-compile:
+
+pop_auth: $(pop_auth_OBJECTS) $(pop_auth_DEPENDENCIES)
+	@rm -f pop_auth
+	$(LINK) $(pop_auth_OBJECTS) $(LIBS)
+
+spop3d: $(spop3d_OBJECTS) $(spop3d_DEPENDENCIES)
+	@rm -f spop3d
+	$(LINK) $(spop3d_OBJECTS) $(spop3d_LDADD) $(LIBS)
+
+
+distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
+
+subdir = src
+
+distdir: $(DISTFILES)
+	@for file in $(DISTFILES); do \
+	  d=$(srcdir); \
+	  if test -d $$d/$$file; then \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
+	  else \
+	    test -f $(distdir)/$$file \
+	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
+	    || cp -p $$d/$$file $(distdir)/$$file || :; \
+	  fi; \
+	done
+
+install-exec: install-binPROGRAMS install-sbinPROGRAMS
+
+install: all install-exec
+
+uninstall: uninstall-binPROGRAMS uninstall-sbinPROGRAMS
+
+all-redirect: Makefile $(PROGRAMS) $(HEADERS)
+
+installdirs:
+	$(mkinstalldirs) $(DESTDIR)$(bindir) $(DESTDIR)$(sbindir)
+
+clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
+
+distclean-generic:
+	-rm -f Makefile $(CONFIG_CLEAN_FILES)
+	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
+
+maintainer-clean-generic:
+	-test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
+
+clean:  clean-binPROGRAMS clean-sbinPROGRAMS clean-compile \
+		clean-generic
+
+distclean:  distclean-binPROGRAMS distclean-sbinPROGRAMS \
+		distclean-compile distclean-generic \
+		clean
+
+maintainer-clean:  maintainer-clean-binPROGRAMS \
+		maintainer-clean-sbinPROGRAMS maintainer-clean-compile \
+		maintainer-clean-generic distclean
+	@echo "This command is intended for maintainers to use;"
+	@echo "it deletes files that may require special tools to rebuild."

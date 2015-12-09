@@ -1,0 +1,58 @@
+# Makefile.in generated automatically by automake 1.4a from Makefile.am
+# Modified by Jerzy Balamut <jurekb@dione.ids.pl>
+# $Id: Makefile.in,v 1.1.1.1 2000/04/12 20:52:25 jurekb Exp $
+
+# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# This Makefile.in is free software; the Free Software Foundation
+# gives unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
+
+srcdir = @srcdir@
+VPATH = @srcdir@
+
+DESTDIR =
+
+top_builddir = ..
+
+EXTRA_DIST = spop3d config.example
+DIST_COMMON = Makefile.in
+
+DISTFILES = $(DIST_COMMON) $(EXTRA_DIST)
+
+.SUFFIXES:
+
+all:
+
+distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
+
+subdir = doc
+
+distdir: $(DISTFILES)
+	@for file in $(DISTFILES); do \
+	  d=$(srcdir); \
+	  if test -d $$d/$$file; then \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
+	  else \
+	    test -f $(distdir)/$$file \
+	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
+	    || cp -p $$d/$$file $(distdir)/$$file || :; \
+	  fi; \
+	done
+
+clean:
+
+distclean:
+	-rm -f Makefile
+
+maintainer-clean: distclean
+	@echo "This command is intended for maintainers to use;"
+	@echo "it deletes files that may require special tools to rebuild."
+
+install:
+
+uninstall:

@@ -1,0 +1,230 @@
+.\" -*-nroff-*-
+.\"
+.\" $Id: spop3d.conf.5,v 1.5 2000/04/28 16:58:55 jurekb Exp $
+.\"
+.\"  Solid POP3 - a POP3 server
+.\"  Copyright (C) 1999  Jerzy Balamut <jurekb@dione.ids.pl>
+.\" 
+.\"  This program is free software; you can redistribute it and/or modify
+.\"  it under the terms of the GNU General Public License as published by
+.\"  the Free Software Foundation; either version 2 of the License, or
+.\"  (at your option) any later version.
+.\" 
+.\"  This program is distributed in the hope that it will be useful,
+.\"  but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\"  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\"  GNU General Public License for more details.
+.\" 
+.\"  You should have received a copy of the GNU General Public License
+.\"  along with this program; if not, write to the Free Software
+.\"  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+.\"
+.\"
+.TH spop3d.conf 5 "OCTOBER 1999" Unix "System Administrator's Manual"
+.SH NAME
+.PP
+spop3d.conf \- configuration data for The Solid POP3 Server.
+.SH DESCRIPTION
+.PP
+A configuration file consists of zero or more blocks. There are two kinds
+of these blocks:
+.I Global
+and \fIVirtualHost\fP.
+.I Global
+block begins with 
+.B <Global>
+and ends with
+.B </Global>
+line.
+.I VirtualHost
+block begins with one of:
+.RS
+.TP
+.B <VirtualHost xx.xx.xx.xx>
+.TP
+.B <VirtualHost host.name.com>
+.TP
+.B <VirtualHost xx.xx.xx.xx host.name.com>
+.RE
+.PP
+lines, where
+.B xx.xx.xx.xx
+is an IPv4 (or IPv6) address and
+.B host.name.com
+is a virtual domain name (read VIRTUALS file).
+.I VirtualHost
+block ends with
+.B </VirtualHost>
+line. Each such block consists of zero or more options. Each option
+is specified in separate line and has 2 parts:
+option name and option argument, separated by a white space character
+(one or more). There are 4 types of options:
+.RS
+.TP
+.BR boolean
+its argument can be "yes" (or "true") and "no" (or "false")
+.TP
+.BR string
+its argument is string. String should be quoted (read the section \fBBUGS\fP).
+.TP
+.BR period
+its argument is number which can be followed by one of these suffixes:
+\fBs\fP (for seconds), \fBm\fP (for minutes), \fBh\fP (for hours), \fBd\fP
+(for days), \fBw\fP (for weeks). This argument specifies some period of time
+or some number.
+.TP
+.BR expire
+exactly the same as \fBperiod\fP, but its argument can also be \fInever\fP.
+.RE
+.PP
+Every text between \fB/*\fP and \fB*/\fP is treated as a comment and 
+is ignored, unless it's inside quoted string.
+.PP
+Options from all
+.I Global
+and some
+.I VirtualHost
+(when their IPv4 (or IPv6) address is equal to socket address or
+their block virtual domain name is equal to virtual domain name
+specified by user) blocks are used. Options from left
+.I VirtualHost
+blocks are ignored. Configuration file is parsed two times, if user specify
+virtual domain name (read VIRTUALS file).
+.PP
+Following options are recognized:
+.RS
+.TP
+.B AllowRootLogin boolean
+Allow root login. It's disabled by default and shouldn't be changed.
+.TP
+.B UserOverride boolean
+Allow users specify their maildrops (path and type) and APOP secrets.
+It's enabled by default.
+.TP
+.B AllowAPOP boolean
+Users can authenticate themselves with APOP scheme. It's enabled by default.
+.TP
+.B MailDropName string
+Specify path to maildrop. The format is the same as for \fB-n\fP option in
+\fBspop3d\fP (8). Default value is
+.I /var/spool/mail/%s
+.TP
+.B MailDropType string
+Specify type of maildrop. The allowed values are \fImailbox\fP and
+\fImaildir\fP. Default value is \fImailbox\fP (or \fImaildir\fP if
+support for \fImailbox\fP isn't compiled in server).
+.TP
+.B APOPServerName string
+Specify the server name which is used for APOP authentication. Default
+value is a name obtained from gethostname() call.
+.TP
+.B AutoLogoutTime period
+Specify the autologout time. The server quit when client is idle for
+specified period. Default value is 2 minutes.
+.TP
+.B ChangeGID boolean
+If enabled server changes his GID to GID of logged user. It's enabled
+by default.
+.TP
+.B WrongCommandsLimit period
+Specify the limit of wrong commands. The server quit when this limit is
+exceeded. Limit is ignored when 0 is specified. Default value is 5.
+.TP
+.B ReadExpire expire
+Expire read (in this instance of daemon) messages that are older than
+\fBexpire\fP. Default value is \fInever\fP.
+.TP
+.B UnreadExpire expire
+Expire unread (in this instance of daemon) messages that are older than
+\fBexpire\fP. Default value is \fInever\fP.
+.TP
+.B DoMapping boolean
+If enabled mapping of user names (read VIRTUALS file) is allowed.
+Option is disabled by default.
+.TP
+.B UserMapFile string
+Specify path to user names mapping file (read VIRTUALS file).
+There is no default value.
+.TP
+.B AllowNonIP boolean
+If enabled user is allowed to specify virtual domain name in when logging.
+Read VIRTUALS file for details. Option is enabled by default.
+.TP
+.B UserBullFile string
+Specify path to user bulletin file (read the section BULLETINS in README). 
+The format is the same as for \fB-n\fP option in \fBspop3d\fP (8). 
+Default value is \fI.spop3d-bull\fP.
+.TP
+.B BulletinDirectory string
+Specify path to bulletin directory. 
+Default value is ${localstatedir}/bulletins (/usr/local/var/bulletins).
+.TP
+.B LogPriority string
+Set logging facility and priority. Default value is local0.notice.
+Known facilities: daemon, local0, local1, ..., local7, mail, user.
+Known priorities: emerg, alert, crit, err, warning, notice, info, debug.
+facility or facility.priority combination are recognized.
+.TP
+.B AddBuletins boolean
+Server checks for new bulletins in BulletinDirectory if enabled.
+Option is enabled by default.
+.TP
+.B RequiredMapping boolean
+If DoMapping and RequiredMapping are enabled user _MUST_ have entry 
+in user mapping file. If DoMapping is enabled and RequiredMapping is disabled
+user needn't have entry in user mapping file (no mapping is performed then).
+Option has no effect when DoMapping is disabled. Option is enabled by default.
+.TP
+.B LogStatistics boolean
+If enabled qpopper-like statistics are logged. At the end of each session
+username, number of deleted messages, size (in bytes) of deleted messages,
+number of messages left on server, size (in bytes) of messages left on server
+are logged. Option is enabled by default.
+.TP
+.B CreateMailDrop boolean
+If enabled maildrop (mailbox or maildir) will be created, when it doesn't
+exist. Option is disabled by default.
+.TP
+.RE
+.SH EXAMPLE
+.RS
+.nf
+<Global>
+	LogPriority	daemon.info
+	AllowRootLogin	yes
+	MailDropName	Maildir
+	MailDropType	maildir
+	UserBullFile	.spop3d-blurp /* It's just an example */
+	ReadExpire	0
+	UnreadExpire	2w
+</Global>
+<VirtualHost 192.168.1.1>
+	LogPriority	local0
+	UserMapFile	/etc/pop3/192.168.1.1.mapping
+	DoMapping 	true
+	UnreadExpire	never
+	APOPServerName	jakis.tam.host.w.pl
+	MailDropName	"/var/spool/mail/%s" /* It is a comment */
+	MailDropType	mailbox
+	AutoLogoutTime	5s
+	UserOverride	yes
+	AllowAPOP 	yes
+	ChangeGID 	true
+</VirtualHost>
+.fi
+.RE
+.SH WARNINGS
+.PP
+spop3d.conf should be readable by "spop3d" user!!! The server exits when
+syntax error occurs in a configuration file. If a configuration file doesn't
+exist (stat() failed), the server logs this fact only when in debugging mode.
+.SH FILES
+.IP "${sysconfdir}/spop3d.conf"
+Global configuration file.
+.SH SEE ALSO
+.PP
+.BR spop3d (8),
+.BR pop_auth (1),
+.BR dot-spop3d (5),
+.SH AUTHOR
+Jerzy Balamut <jurekb@dione.ids.pl>

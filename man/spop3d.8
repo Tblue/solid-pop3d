@@ -1,0 +1,132 @@
+.\" -*-nroff-*-
+.\"
+.\" $Id: spop3d.8,v 1.1.1.1 2000/04/12 20:52:25 jurekb Exp $
+.\"
+.\"  Solid POP3 - a POP3 server
+.\"  Copyright (C) 1999  Jerzy Balamut <jurekb@dione.ids.pl>
+.\" 
+.\"  This program is free software; you can redistribute it and/or modify
+.\"  it under the terms of the GNU General Public License as published by
+.\"  the Free Software Foundation; either version 2 of the License, or
+.\"  (at your option) any later version.
+.\" 
+.\"  This program is distributed in the hope that it will be useful,
+.\"  but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\"  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\"  GNU General Public License for more details.
+.\" 
+.\"  You should have received a copy of the GNU General Public License
+.\"  along with this program; if not, write to the Free Software
+.\"  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+.\"
+.\"
+.TH spop3d 8 "OCTOBER 1999" Unix "System Administrator's Manual"
+.SH NAME
+.PP
+spop3d \- The Solid POP3 Server
+.SH SYNOPSIS
+.PP
+.B spop3d
+[-rd]
+[-n \fImaildropfile\fP]
+[-t \fImaildroptype\fP]
+[-a \fItime\fP]
+[-f \fIconfigfile\fP]
+.SH DESCRIPTION
+.PP
+The Solid POP3 Server is an implementation of the Post Office Protocol server
+that has flexibility on mind. It has support for mailbox, maildir, APOP,
+bulletins and few other things. It can work as inetd or standalone
+server. See README for more details.
+.SH OPTIONS
+.PP
+.IP "-n \fImaildropfile\fP"
+Specify a maildrop file (or directory). The following strings beginning with
+.BR % 
+character are recognized and replaced:
+.RS
+.TP
+.B %s
+replace it with user name
+.TP
+.B %dN
+replace it with N-th character of user name
+.TP
+.B %%
+replace it with single
+.BR % 
+character
+.TP
+.B %m
+replace it with mapped user name (read VIRTUALS file)
+.PP
+If specified path is not absolute it is treated as relative to user home
+directory. For example:
+.I /var/mail/%d1/%d2/%s
+is expanded to
+.I /var/mail/j/u/jurekb\fP
+and
+.I Mail/bugtraq
+is expanded to
+.I /home/jurekb/Mail/bugtraq
+for "jurekb" user on my system. The default is
+.I /var/spool/mail/%s
+or
+.I Maildir
+when mailbox support is not compiled in.
+.RE 
+.IP "-t \fImaildroptype\fP"
+Specify a maildrop type.
+.I mailbox
+and
+.I maildir
+are supported. The default is
+.I mailbox
+or
+.I maildir
+when mailbox support is not compiled in.
+.IP "-a \fItime\fP"
+Specify an autologout time. The following suffixes are recognized:
+.RS
+.TP
+.BR s
+the time is specified in seconds
+.TP
+.BR m
+the time is specified in minutes
+.TP
+.BR h
+the time is specified in hours
+.TP
+.BR d
+the time is specified in days
+.TP
+.BR w
+the time is specified in weeks
+.PP
+Seconds are used if no suffix is present. The default value is 2 minutes.
+.RE
+.IP "-f \fIconfigfile\fP"
+Specify a configuration file. The default is
+.I ${sysconfdir}/spop3d.conf
+.IP "-d"
+Set server into debugging mode.
+.IP "-r"
+Allow root login. This feature is disabled by default and shouldn't be used.
+.SH FILES
+.PP
+.IP "~/.spop3d"
+User configuration file.
+.IP "~/.spop3d-bull"
+This file is used by bulletin code to determine last bulletin received by user.
+.IP ${localstatedir}/bulletins"
+Bulletins directory.
+.IP ${sysconfdir}/spop3d.conf"
+Global configuration file.
+.SH SEE ALSO
+.PP
+.BR spop3d.conf (5),
+.BR pop_auth (1),
+.BR dot-spop3d (5),
+.SH AUTHOR
+Jerzy Balamut <jurekb@dione.ids.pl>

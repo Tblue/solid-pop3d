@@ -1,0 +1,6 @@
+Authors of The Solid POP3 Server:
+
+Jerzy Balamut.  Everything as for now.
+
+Arkadiusz Miskiewicz.  Automake support. First version of all ".am"
+and configure.in files.

@@ -1,0 +1,46 @@
+0.15
+    - changed UIDL calculation method for mailbox!!!
+    - IPv6 code should be more portable now
+    - accept mailboxes with invalid date in "From " envelope
+    - mailbox isn't locked during retrieving
+    - accept maildir messages created by procmail now
+    - user will receive all bulletins if his user bulletin file is created
+    - downcase user and domain name
+    - added option "LogPriority"
+    - added check for inet_aton in -lresolv
+    - added option "RequiredMapping"
+    - added qpopper-like statistics (./configure --enable-statistics 
+      and LogStatistics option)
+    - existance of maildrop isn't required unless you want to add bulletins
+
+0.14
+    - should work on 64-bit machines now - sizeof(int) != sizeof(size_t)
+    - corrected dot-spop3d(5) manual page
+    - APOP support compiles now :>
+    - changed SP_IPV6 to SPIPV6 in main.c :>
+    - pop_error() isn't called, when read() (reading from socket) returns 0
+
+0.13
+    - added zeroing password before exit(1) calls in few places
+    - fixed mb_readtime() in mailbox.c
+    - few changes in logging code (added few options to ./configure)
+
+0.12:
+    - added user names mapping
+    - added non-IP virtual hosting
+    - changed PAM service name from "solidpop3d" to "spop3d"
+    - fixed establishing credentials in PAM code
+    - determining whether mailbox has been changed works now (there wasn't
+      danger of damaging mailbox)
+    - ftruncate() is called only when mailbox size has been changed
+    - renamed option "ServerName" to "APOPServerName"
+    - support for "AllowRootLogin" option is available as ./configure --enable
+      option (not compiled in by default), if isn't compiled in, root login
+      isn't allowed (if compiled in, root login isn't allowed by default too,
+      but you can change it)
+    - fixed read_loop() - changed size_t to ssize_t
+    - rewrited global configuration file parser
+    - fixed command line parsing
+    - added options: "BulletinDirectory" and "AddBulletins"
+    - added option "CreateMailDrop"
+    - added support for IPv6 protocol

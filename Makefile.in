@@ -1,0 +1,129 @@
+# Makefile.in generated automatically by automake 1.4a from Makefile.am
+# Modified by Jerzy Balamut <jurekb@dione.ids.pl>
+# $Id: Makefile.in,v 1.3 2000/04/21 16:37:02 jurekb Exp $
+
+# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# This Makefile.in is free software; the Free Software Foundation
+# gives unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
+
+SHELL = @SHELL@
+
+srcdir = @srcdir@
+VPATH = @srcdir@
+top_srcdir = @top_srcdir@
+
+top_builddir = .
+
+PACKAGE = @PACKAGE@
+USERCONFIG_O = @USERCONFIG_O@
+VERSION = @VERSION@
+
+SUBDIRS = doc man src
+AUXFILES = config.guess config.sub install-sh missing mkinstalldirs
+EXTRA_DIST = THANKS
+DIST_COMMON = README AUTHORS COPYING ChangeLog INSTALL Makefile.in \
+acconfig.h config.h.in configure configure.in aclocal.m4 VIRTUALS CONFIGFILE
+
+DISTFILES = $(DIST_COMMON) $(EXTRA_DIST)
+
+TAR = tar
+GZIP_ENV = --best
+.SUFFIXES:
+distdir = $(PACKAGE)-$(VERSION)
+top_distdir = $(distdir)
+
+@SET_MAKE@
+
+all: all-recursive
+
+all-recursive:
+	@for subdir in $(SUBDIRS); do \
+	  target=`echo $@ | sed s/-recursive//`; \
+	  (cd $$subdir && $(MAKE) $$target) \
+	  || exit 1; \
+	done
+
+clean: clean-recursive
+
+mostlyclean: clean
+
+clean-recursive:
+	@for subdir in $(SUBDIRS); do \
+	  (cd $$subdir && $(MAKE) clean) \
+	  || exit 1; \
+	done
+
+distclean: distclean-recursive distclean-pwd
+
+distclean-pwd:
+	rm -f config.h config.status config.cache config.log Makefile
+
+distclean-recursive:
+	@for subdir in $(SUBDIRS); do \
+	  (cd $$subdir && $(MAKE) distclean) \
+	  || exit 1; \
+	done
+
+maintainer-clean: maintainer-clean-recursive distclean-pwd
+
+maintainer-clean-recursive:
+	@for subdir in $(SUBDIRS); do \
+	  (cd $$subdir && $(MAKE) maintainer-clean) \
+	  || exit 1; \
+	done
+
+install-strip:
+	$(MAKE) INSTALL_STRIP_FLAG=-s install
+
+install: install-recursive
+
+install-recursive:
+	@for subdir in $(SUBDIRS); do \
+	  (cd $$subdir && $(MAKE) install) \
+	  || exit 1; \
+	done
+
+uninstall: uninstall-recursive
+
+uninstall-recursive:
+	@for subdir in $(SUBDIRS); do \
+	  (cd $$subdir && $(MAKE) uninstall) \
+	  || exit 1; \
+	done
+
+dist: distdir
+	GZIP=$(GZIP_ENV) $(TAR) chozf $(distdir).tar.gz $(distdir)
+	rm -rf $(distdir)
+
+distdir: $(DISTFILES)
+	rm -rf $(distdir)
+	mkdir $(distdir)
+	chmod 755 $(distdir)
+	here=`cd $(top_builddir) && pwd`; \
+	top_distdir=`cd $(distdir) && pwd`; \
+	distdir=`cd $(distdir) && pwd`;
+	@for file in $(DISTFILES); do \
+	  d=$(srcdir); \
+	  test -f $(distdir)/$$file \
+	  || cp -p $$d/$$file $(distdir)/$$file || :; \
+	done
+	chmod 644 $(distdir)/*
+	chmod 755 $(distdir)/configure
+	@for subdir in $(SUBDIRS); do \
+	  mkdir $(distdir)/$$subdir \
+	  || exit 1; \
+	  chmod 755 $(distdir)/$$subdir; \
+	  (cd $$subdir && $(MAKE) top_distdir=../$(distdir) distdir=../$(distdir)/$$subdir distdir) \
+	  || exit 1; \
+	  chmod 644 $(distdir)/$$subdir/*; \
+	done
+	@for file in $(AUXFILES); do \
+	    cp -p $(srcdir)/$$file $(distdir); \
+	    chmod 755 $(distdir)/$$file; \
+	done

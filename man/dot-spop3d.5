@@ -1,0 +1,64 @@
+.\" -*-nroff-*-
+.\"
+.\" $Id: dot-spop3d.5,v 1.1.1.1 2000/04/12 20:52:25 jurekb Exp $
+.\"
+.\"  Solid POP3 - a POP3 server
+.\"  Copyright (C) 1999  Jerzy Balamut <jurekb@dione.ids.pl>
+.\" 
+.\"  This program is free software; you can redistribute it and/or modify
+.\"  it under the terms of the GNU General Public License as published by
+.\"  the Free Software Foundation; either version 2 of the License, or
+.\"  (at your option) any later version.
+.\" 
+.\"  This program is distributed in the hope that it will be useful,
+.\"  but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\"  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\"  GNU General Public License for more details.
+.\" 
+.\"  You should have received a copy of the GNU General Public License
+.\"  along with this program; if not, write to the Free Software
+.\"  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+.\"
+.\"
+.TH dot-spop3d 5 "OCTOBER 1999" Unix "User's Manual"
+.SH NAME
+.PP
+dot-spop3d \- user configuration data for The Solid POP3 Server.
+.SH DESCRIPTION
+.PP
+User can specify his maildrop (location and type) and APOP secret in ~/.spop3d
+configuration file. You must set right mode (0600 - -rw-------) 
+for ~/.spop3d!!!
+Maildrop specification consists of 3 parts, separated
+by white space character:
+.TP
+\fIMailDrop\fP \fBpath type\fP
+.PP
+\fBPath\fP argument should be specified in the same format as \fI-n\fP 
+option in
+.BR spop3d (8).
+\fBType\fP argument should be \fImailbox\fP or \fImaildir\fP.
+.PP
+APOP secret specification contains word \fIAPOPSecret\fP followed by encrypted 
+secret. You shouldn't change this secret manually. Use
+.BR pop_auth (1)
+to do this. See
+.BR pop_auth (1)
+manual for more details on secret encryption!!!
+.SH EXAMPLE
+.RS
+.nf
+MailDrop  	Mail/bugtraq	mailbox
+APOPSecret	0123456789
+.fi
+.RE
+.SH FILES
+.IP "~/.spop3d"
+User configuration file.
+.SH SEE ALSO
+.PP
+.BR spop3d (8),
+.BR pop_auth (1),
+.BR spop3d.conf (5),
+.SH AUTHOR
+Jerzy Balamut <jurekb@dione.ids.pl>

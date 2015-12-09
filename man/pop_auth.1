@@ -1,0 +1,48 @@
+.\" -*-nroff-*-
+.\"
+.\" $Id: pop_auth.1,v 1.1.1.1 2000/04/12 20:52:25 jurekb Exp $
+.\"
+.\"  Solid POP3 - a POP3 server
+.\"  Copyright (C) 1999  Jerzy Balamut <jurekb@dione.ids.pl>
+.\" 
+.\"  This program is free software; you can redistribute it and/or modify
+.\"  it under the terms of the GNU General Public License as published by
+.\"  the Free Software Foundation; either version 2 of the License, or
+.\"  (at your option) any later version.
+.\" 
+.\"  This program is distributed in the hope that it will be useful,
+.\"  but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\"  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\"  GNU General Public License for more details.
+.\" 
+.\"  You should have received a copy of the GNU General Public License
+.\"  along with this program; if not, write to the Free Software
+.\"  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+.\"
+.\"
+.TH pop_auth 1 "OCTOBER 1999" Unix "User's Manual"
+.SH NAME
+.PP
+pop_auth \- set an user's APOP secret
+.SH SYNOPSIS
+.PP
+.B pop_auth
+.SH DESCRIPTION
+.PP
+.B Pop_auth
+asks user for his APOP secret and stores this secret after encryption
+in ~/.spop3d file. Used encryption is very weak and protects only from
+curious system administrator who accidentialy looks at ~/.spop3d file.
+Don't use your account password as the APOP secret!!!
+.SH OPTIONS
+No options are recognized.
+.SH FILES
+.IP "~/.spop3d"
+User configuration file. APOP secret is writed here.
+.SH SEE ALSO
+.PP
+.BR spop3d (8),
+.BR spop3d.conf (5),
+.BR dot-spop3d (5),
+.SH AUTHOR
+Jerzy Balamut <jurekb@dione.ids.pl>

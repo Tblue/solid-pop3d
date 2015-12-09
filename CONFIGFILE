@@ -1,0 +1,31 @@
+./configure --enable-allowroot
+options: AllowRootLogin
+
+./configure --enable-userconfig (enabled by default)
+options: UserOverride
+
+./configure --enable-apop
+options: AllowAPOP, APOPServerName
+
+./configure --enable-bulletins
+options: UserBullFile, BulletinDirectory, AddBulletins
+
+./configure --enable-expire (enabled by default)
+options: ReadExpire, UnreadExpire
+
+./configure --enable-mapping
+options: UserMapFile, DoMapping, RequiredMapping
+
+./configure --enable-nonip
+options: AllowNonIP
+
+./configure --enable-createmail
+options: CreateMailDrop
+
+./configure --enable-statistics
+options: LogStatistics
+
+
+Left options (always available):
+MailDropName, MailDropType, AutoLogoutTime, ChangeGID, WrongCommandsLimit,
+LogPriority
