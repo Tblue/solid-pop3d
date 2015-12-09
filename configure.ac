@@ -1,4 +1,3 @@
-dnl $Id: configure.in,v 1.8 2000/05/12 15:40:10 jurekb Exp $
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(src/authenticate.c)
 
