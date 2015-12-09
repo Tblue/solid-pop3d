@@ -19,8 +19,6 @@ LDFLAGS         += -Wl,-z,defs -Wl,--as-needed
 
 override_dh_auto_configure: $(BUILDDIR)/configure-stamp
 $(BUILDDIR)/configure-stamp:
-	 rm -f .pc/.*unapply # see bug#649521
-	
 	dh_autotools-dev_updateconfig
 	
 	CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)" \

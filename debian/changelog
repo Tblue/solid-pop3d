@@ -1,3 +1,10 @@
+solid-pop3d (0.15-27) unstable; urgency=medium
+
+  * Italian translation of debconf templates (closes: #766865).
+  * Standards-Version: 3.9.6 (no changes).
+
+ -- Robert Luberda <robert@debian.org>  Sun, 02 Nov 2014 23:48:52 +0100
+
 solid-pop3d (0.15-26) unstable; urgency=low
 
   * Apply patch from Simon Ruderich to handle CPPFLAGS hardening
