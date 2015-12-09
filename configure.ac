@@ -1,11 +1,7 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(src/authenticate.c)
-
-PACKAGE=solid-pop3d
-VERSION=0.15
-
-AC_CONFIG_HEADERS(config.h)
-AM_INIT_AUTOMAKE($PACKAGE,$VERSION)
+AC_INIT([solid-pop3d], [0.15])
+AC_CONFIG_SRCDIR([src/authenticate.c])
+AC_CONFIG_HEADERS([config.h])
 
 # autoheader templates
 # (only add a call to AH_TEMPLATE here if there are
