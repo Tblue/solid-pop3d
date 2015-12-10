@@ -14,6 +14,7 @@
 
 SHELL = @SHELL@
 
+datarootdir = @datarootdir@
 srcdir = @srcdir@
 VPATH = @srcdir@
 top_srcdir = @top_srcdir@

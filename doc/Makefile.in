@@ -12,6 +12,7 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
+datarootdir = @datarootdir@
 srcdir = @srcdir@
 VPATH = @srcdir@
 
