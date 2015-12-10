@@ -4,3 +4,8 @@ Jerzy Balamut.  Everything as for now.
 
 Arkadiusz Miskiewicz.  Automake support. First version of all ".am"
 and configure.in files.
+
+Tilman Blumenbach.  Slight Autotools modernization and support
+for properly handling "damaged" messages without trailing newlines
+in maildir component (they are now always fixed on-the-fly; original
+message files are not modified).
