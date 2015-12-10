@@ -24,7 +24,7 @@ $(BUILDDIR)/configure-stamp:
 	CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)" \
 	dh_auto_configure $(DH_AUTO_OPTIONS) -- \
 	        --localstatedir=/var/lib/solid-pop3d \
-	        --program-transform-name="s/^spop3d$$/solid-pop3d/" \
+	        --program-transform-name='s/^spop3d$$$$/solid-pop3d/' \
 	        --enable-pam \
 	        --enable-apop \
 	        --enable-mailbox \
