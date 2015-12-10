@@ -246,9 +246,16 @@ void md_top(unsigned int nr, unsigned int lcount, int fd, _md_cleanup cleanup) {
 	int newline;
 	char mbuf[128];
 
+	size = messages[nr].size;
+	if (messages[nr].missing_eol) {
+		/* Account for missing ("phantom") trailing newline in message.
+		 * We will add it later.
+		 */
+		size--;
+	}
+
 /* send header */
 	fd_initfgets();
-	size = messages[nr].size;
 	newline = 1;
 	send_ok("");
 	while (((tmp = fd_fgets(mbuf, sizeof(mbuf), fd)) > 0) && (size > 0)) {
@@ -344,12 +351,23 @@ void md_top(unsigned int nr, unsigned int lcount, int fd, _md_cleanup cleanup) {
 			newline = 0;
 		};		
 	};
+
 	if (tmp < 0) {
 		cleanup();
 		pop_log(pop_priority, "maildrop: can't read message");
 		pop_error("maildrop: read");
 		exit(1);
 	};
+
+	if (size == 0 && messages[nr].missing_eol) {
+		/* We output the entire message, add the missing trailing newline characters. */
+		if (write(1, "\r\n", 2) != 2) {
+			cleanup();
+			pop_log(pop_priority, "maildrop: can't write to socket");
+			pop_error("maildrop: write");
+			exit(1);
+		}
+	}
 }
 
 void md_retrieve(unsigned int nr, int fd, _md_cleanup cleanup) {
