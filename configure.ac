@@ -3,9 +3,9 @@ AC_INIT([solid-pop3d], [0.15])
 AC_CONFIG_SRCDIR([src/authenticate.c])
 AC_CONFIG_HEADERS([config.h])
 
-# autoheader templates
-# (only add a call to AH_TEMPLATE here if there are
-# multiple AC_DEFINE calls for a variable)
+dnl autoheader templates
+dnl (only add a call to AH_TEMPLATE here if there are
+dnl multiple AC_DEFINE calls for a variable)
 AH_TEMPLATE([CONFIGFILE],
 			[Define if you want to have configuration
 			 file support])
@@ -30,12 +30,12 @@ AH_TEMPLATE([USERCONFIG],
 			[Define if you want to have user configuration
 			 support])
 
-dnl Checks for programs.
+# Checks for programs.
 AC_PROG_CC
 AC_PROG_INSTALL
 AC_CANONICAL_HOST
 
-dnl Checks for authenticate methods (mostly ripped from SSH)
+# Checks for authenticate methods (mostly ripped from SSH)
 SPOPLIBS=""
 case "$host" in
 	*-*-sunos4.1.1*)
@@ -109,7 +109,7 @@ case "$host" in
 		;;
 esac
 
-dnl Checks for header files.
+# Checks for header files.
 AC_HEADER_DIRENT
 AC_HEADER_STDC
 AC_HEADER_TIME
@@ -117,7 +117,7 @@ AC_C_BIGENDIAN
 AC_CHECK_FUNCS(strchr memcpy setgroups flock)
 AC_CHECK_HEADERS(fcntl.h limits.h sys/file.h syslog.h unistd.h shadow.h grp.h sys/time.h)
 
-dnl Checks for typedefs, structures, and compiler characteristics.
+# Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
 AC_TYPE_SIZE_T
 AC_TYPE_OFF_T
@@ -134,9 +134,9 @@ AC_TRY_COMPILE( [
 			  [Define to `int' if <sys/types.h> doesn't
 			   define])
 	AC_MSG_RESULT(no)])
-# Simple AC_CHECK_TYPE doesn't work.
+dnl Simple AC_CHECK_TYPE doesn't work.
 
-dnl Checks for library functions.
+# Checks for library functions.
 AC_TYPE_SIGNAL
 AC_CHECK_FUNCS(vsnprintf snprintf)
 AC_CHECK_FUNCS(gethostname mkdir rmdir utime strdup strerror strtol setsockopt)
@@ -148,13 +148,13 @@ AC_CHECK_FUNC(inet_aton, [
 AC_CHECK_LIB(nsl, t_accept, SPOPLIBS="$SPOPLIBS -lnsl")
 AC_CHECK_LIB(socket, socket, SPOPLIBS="$SPOPLIBS -lsocket")
 
-dnl Check for maillock() - ripped from qpopper
+# Check for maillock() - ripped from qpopper
 AC_CHECK_LIB(mail, maillock, SPOPLIBS="$SPOPLIBS -lmail"; AC_DEFINE(MAILOCK))
 
-dnl Check for maillock() in liblockfile too for Debian - araqnid
+# Check for maillock() in liblockfile too for Debian - araqnid
 AC_CHECK_LIB(lockfile, maillock, SPOPLIBS="$SPOPLIBS -llockfile"; AC_DEFINE(MAILOCK))
 
-dnl Checks for authentication methods (mostly ripped from SSH)
+# Checks for authentication methods (mostly ripped from SSH)
 AC_CHECK_FUNC(crypt, [
 	crypt_found=yes] )
 if test -z "$crypt_found"; then
@@ -511,8 +511,7 @@ AC_ARG_ENABLE(statistics,
 	], [
 	AC_MSG_RESULT(no)
 	] )
-	
 
 AC_OUTPUT(Makefile doc/Makefile man/Makefile src/Makefile)
 
-# vim: sw=4 ts=4 noet
+dnl vim: sw=4 ts=4 noet
