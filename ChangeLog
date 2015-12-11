@@ -1,3 +1,11 @@
+0.16
+    - Maildir module now can handle messages without a trailing newline
+      (previously, such messages were treated as "damaged" and prevented
+      access to the entire mailbox)
+    - Internal: Make md_alloc() and md_realloc() zero the allocated memory
+      to ensure proper initialization of structs
+    - Build: Autotools modernization
+
 0.15
     - changed UIDL calculation method for mailbox!!!
     - IPv6 code should be more portable now
@@ -44,3 +52,5 @@
     - added options: "BulletinDirectory" and "AddBulletins"
     - added option "CreateMailDrop"
     - added support for IPv6 protocol
+
+# vim: ts=4 sw=4 et
