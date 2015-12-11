@@ -1,7 +1,7 @@
 Source: solid-pop3d
 Section: mail
 Priority: extra
-Maintainer: Robert Luberda <robert@debian.org>
+Maintainer: Tilman Blumenbach <tilman@ax86.net>
 Build-Depends: autotools-dev,
                debhelper (>= 9),
                liblockfile-dev (>= 1.02),
