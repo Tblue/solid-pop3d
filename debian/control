@@ -7,8 +7,8 @@ Build-Depends: autotools-dev,
                liblockfile-dev (>= 1.02),
                libpam0g-dev (>= 0.76-14)
 Standards-Version: 3.9.6
-Vcs-Git: git://anonscm.debian.org/users/robert/solid-pop3d.git
-Vcs-Browser: http://anonscm.debian.org/gitweb/?p=users/robert/solid-pop3d.git
+Vcs-Git: https://github.com/Tblue/solid-pop3d.git
+Vcs-Browser: https://github.com/Tblue/solid-pop3d
 
 Package: solid-pop3d
 Architecture: any
