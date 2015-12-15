@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT([solid-pop3d], [0.16])
+AC_INIT([solid-pop3d], [0.17])
 AC_CONFIG_SRCDIR([src/authenticate.c])
 AC_CONFIG_HEADERS([config.h])
 
