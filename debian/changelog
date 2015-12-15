@@ -1,3 +1,13 @@
+solid-pop3d (0.17) unstable; urgency=low
+
+  * maildir: When moving files from new/ to cur/, do not add an info
+    string if one is already present.
+  * Internal: Made md_alloc() and md_realloc() more safe and readable.
+  * debian/copyright: Mention correct package maintainer.
+  * debian/control: Reference the currently used GitHub repository.
+
+ -- Tilman Blumenbach <tilman@ax86.net>  Fri, 15 Dec 2015 18:07:00 +0100
+
 solid-pop3d (0.16) unstable; urgency=medium
 
   * Maildir module now can handle messages without a trailing newline

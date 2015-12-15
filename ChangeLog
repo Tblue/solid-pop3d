@@ -1,3 +1,8 @@
+0.17
+    - maildir: When moving files from new/ to cur/, do not add an info
+      string if one is already present.
+    - Internal: Made md_alloc() and md_realloc() more safe and readable.
+
 0.16
     - Maildir module now can handle messages without a trailing newline
       (previously, such messages were treated as "damaged" and prevented
