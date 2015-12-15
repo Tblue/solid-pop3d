@@ -616,8 +616,18 @@ void mdir_update() {
 				continue;
 			strcpy(newfilename, maildrop_name);
 			strcat(newfilename, "/cur/");
-			strcat(newfilename,((char *) (((struct mdir_message *) (messages[tmp].md_specific))->filename)) + 4);
-			strcat(newfilename, ":2,"); /* no overflow, already checked few lines above */
+			strcat(newfilename, tmp2 + 4);
+
+			/* Handle MDAs which add an info string to the filenames of messages in new/. While messages
+			 * in new/ are not supposed to have info strings (according to the maildir spec), tools like
+			 * offlineimap add them anyway. In offlineimap's case, they store the flags of unread
+			 * messages. Thus, we cannot simply discard these info strings; instead, if an info string
+			 * is present, we leave it untouched (and do not add our own info string).
+			 */
+			if (!strchr(tmp2, ':')) {
+				strcat(newfilename, ":2,"); /* no overflow, already checked few lines above */
+			}
+
 			rename(filename, newfilename);
 		};		
 	};
