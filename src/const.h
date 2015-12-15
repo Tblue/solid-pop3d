@@ -31,6 +31,7 @@
 #define AUTH_STATE 0
 #define TRANSACTION_STATE 1
 #define SERVICE_NAME "solid-pop3d"
+#define MSGNR_INCREMENT 100
 #define MAXMSGNR 10000
 #define SERVER_GREETING "Solid POP3 server ready"
 #define DEFAUTOLOGOUTTIME 60

@@ -68,7 +68,7 @@ struct str_maildrop *find_maildrop(char *name) {
 int md_alloc(int size) {
 	int i;
 
-	maxmsgnr = 100;
+	maxmsgnr = MSGNR_INCREMENT;
 	msgnr = 0;
 
 	if ((messages = calloc(maxmsgnr, sizeof(struct message))) == NULL)
