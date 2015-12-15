@@ -89,31 +89,48 @@ int md_realloc(int size) {
 	char *newspecific;
 	int i, newmaxmsgnr;
 
-	if (msgnr < maxmsgnr)
+	if (msgnr < maxmsgnr) {
+		/* There are still some usable message structs (i. e. not all of them are used),
+		 * no need to reallocate. */
 		return 0;
+	}
 
 	newmaxmsgnr = maxmsgnr + MSGNR_INCREMENT;
-	if (newmaxmsgnr > MAXMSGNR)
+	if (newmaxmsgnr > MAXMSGNR) {
+		/* Maximum number of message structs exceeded. */
 		return -1;
+	}
 
-	if ((newmessages = realloc(messages, newmaxmsgnr * sizeof(struct message))) == NULL)
+	/* Allocate space for MSGNR_INCREMENT more message structs. */
+	if ((newmessages = realloc(messages, newmaxmsgnr * sizeof(struct message))) == NULL) {
 		return -1;
+	}
 
-	memset(newmessages + maxmsgnr, 0, MSGNR_INCREMENT * sizeof(struct message));
-
-	if ((newspecific = realloc(specific, newmaxmsgnr * size)) == NULL)
-		return -1;
-
-	for (i = 0; i < newmaxmsgnr; i++) {
-		messages[i].md_specific = specific + (i * size);
-		if (i >= maxmsgnr)
-			memset(messages[i].md_specific, 0, size);
-	};
-
-	maxmsgnr = newmaxmsgnr;
 	messages = newmessages;
+
+	/* Make sure the newly allocated memory is initialized properly. */
+	memset(messages + maxmsgnr, 0, MSGNR_INCREMENT * sizeof(struct message));
+
+	/* For all the new message structs, allocate memory for the md_specific data. */
+	if ((newspecific = realloc(specific, newmaxmsgnr * size)) == NULL) {
+		return -1;
+	}
+
 	specific = newspecific;
 
+	/* The md_specific data may have been moved by realloc() to a different address, so fix up the
+	 * pointers in the message structs. Also zero the newly allocated memory.
+	 */
+	for (i = 0; i < newmaxmsgnr; i++) {
+		messages[i].md_specific = specific + (i * size);
+
+		if (i >= maxmsgnr) {
+			memset(messages[i].md_specific, 0, size);
+		}
+	};
+
+	/* That's it, now we can safely use the newly allocated message structs. */
+	maxmsgnr = newmaxmsgnr;
 	return 0;
 }
 
