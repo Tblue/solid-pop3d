@@ -66,20 +66,21 @@ struct str_maildrop *find_maildrop(char *name) {
 
 
 int md_alloc(int size) {
-	int tmp;
+	int i;
 
-	if ((messages = (struct message *) malloc(sizeof(struct message) * 100)) == NULL)
-		return -1;
-	memset(messages, 0, sizeof(struct message) * 100);
-
-	if ((specific = ((char *)malloc(size * 100))) == NULL)
-		return -1;
 	maxmsgnr = 100;
 	msgnr = 0;
-	for (tmp = 0; tmp < 100; tmp++) {
-		messages[tmp].md_specific = specific + (tmp * size);
-		memset(messages[tmp].md_specific, 0, size);
-	};
+
+	if ((messages = calloc(maxmsgnr, sizeof(struct message))) == NULL)
+		return -1;
+
+	if ((specific = calloc(maxmsgnr, size)) == NULL)
+		return -1;
+
+	for (i = 0; i < maxmsgnr; i++) {
+		messages[i].md_specific = specific + (i * size);
+	}
+
 	return 0;
 }
 
