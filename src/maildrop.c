@@ -85,29 +85,35 @@ int md_alloc(int size) {
 }
 
 int md_realloc(int size) {
-	struct message *tmp;
-	char *tmp2;
-	int tmp3;
+	struct message *newmessages;
+	char *newspecific;
+	int i, newmaxmsgnr;
 
 	if (msgnr < maxmsgnr)
 		return 0;
-	maxmsgnr += 100;
-	if (maxmsgnr > MAXMSGNR)
+
+	newmaxmsgnr = maxmsgnr + MSGNR_INCREMENT;
+	if (newmaxmsgnr > MAXMSGNR)
 		return -1;
 
-	if ((tmp = (struct message *) realloc(messages, maxmsgnr * sizeof(struct message))) == NULL)
+	if ((newmessages = realloc(messages, newmaxmsgnr * sizeof(struct message))) == NULL)
 		return -1;
-	memset(tmp + maxmsgnr - 100, 0, 100 * sizeof(struct message));
 
-	messages = tmp;
-	if ((tmp2 = ((char *)realloc(specific, maxmsgnr * size))) == NULL)
+	memset(newmessages + maxmsgnr, 0, MSGNR_INCREMENT * sizeof(struct message));
+
+	if ((newspecific = realloc(specific, newmaxmsgnr * size)) == NULL)
 		return -1;
-	specific = tmp2;
-	for (tmp3 = 0; tmp3 < maxmsgnr; tmp3++) {
-		messages[tmp3].md_specific = specific + (tmp3 * size);
-		if (tmp3 >= msgnr)
-			memset(messages[tmp3].md_specific, 0, size);
+
+	for (i = 0; i < newmaxmsgnr; i++) {
+		messages[i].md_specific = specific + (i * size);
+		if (i >= maxmsgnr)
+			memset(messages[i].md_specific, 0, size);
 	};
+
+	maxmsgnr = newmaxmsgnr;
+	messages = newmessages;
+	specific = newspecific;
+
 	return 0;
 }
 
