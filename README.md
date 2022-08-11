@@ -1,5 +1,15 @@
 # Solid POP3 Server
 
+## DEPRECATION NOTICE
+
+**This particular Git repository is not being maintained.** It contains a
+number of improvements over the last upstream release (which is 0.15). See file
+[ChangeLog](ChangeLog) for a detailed list.
+
+If you are looking for a POP3 server, I recommend
+[pop3d from GNU Mailutils](https://mailutils.org/manual/html_section/pop3d.html#pop3d).
+
+
 ## GENERAL INFORMATION
 
 The Solid POP3 Server is an implementation of a Post Office Protocol version 3
@@ -114,3 +124,6 @@ See the file `COPYING` for details.
 
 ____________________________________
 Jerzy Balamut, <jurekb@dione.ids.pl>
+
+
+<!-- vim: se tw=79 cc=+1 et sw=4 ts=4: -->
