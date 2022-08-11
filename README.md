@@ -20,7 +20,7 @@ is very similar to the design of Solar Designer's POPA3D server. This solution
 let's minimalize size of code working with root privileges. The code was also
 heavily checked for buffer overflow leaks and file races. None have been found
 as for now. All operations on files are done with user privileges. There
-is no SUID APOP secrets database management program (as in QPOP). Each user
+is no `SUID` APOP secrets database management program (as in QPOP). Each user
 can specify his secret in his own home directory.
 
 Default maildrop name is `/var/spool/mail/%s` (read `spop3d(8)` manual).
@@ -29,9 +29,9 @@ you should change this value (use `-n` option or edit `src/const.h`).
 
 The newest version of the server is available under:
 
-- ftp://ftp.rudykot.pl/pub/solidpop3d
-- ftp://sedez.iq.pl/pub/solidpop3d
-- ftp://dione.ids.pl/pub/solidpop3d
+- <ftp://ftp.rudykot.pl/pub/solidpop3d>
+- <ftp://sedez.iq.pl/pub/solidpop3d>
+- <ftp://dione.ids.pl/pub/solidpop3d>
 
 Homepage:
     http://solidpop3d.pld.org.pl/
