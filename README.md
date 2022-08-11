@@ -112,7 +112,5 @@ It isn't such secure as it looks.
 The program is distributed under GNU General Public License.
 See the file `COPYING` for details.
 
-
-## ORIGINAL AUTHOR
-
+____________________________________
 Jerzy Balamut, <jurekb@dione.ids.pl>
