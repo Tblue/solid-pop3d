@@ -7,7 +7,7 @@ number of improvements over the last upstream release (which is 0.15). See file
 [ChangeLog](ChangeLog) for a detailed list.
 
 If you are looking for a POP3 server, I recommend
-[pop3d from GNU Mailutils](https://mailutils.org/manual/html_section/pop3d.html#pop3d).
+[pop3d from GNU Mailutils](https://mailutils.org/manual/html_section/pop3d.html).
 
 
 ## GENERAL INFORMATION
